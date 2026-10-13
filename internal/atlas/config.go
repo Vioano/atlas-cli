@@ -122,7 +122,7 @@ func ID() string {
 	if _, err := rand.Read(b); err != nil {
 		panic(err)
 	}
-	return base64.RawURLEncoding.EncodeToString(b)
+	return "a" + base64.RawURLEncoding.EncodeToString(b)
 }
 
 // Pack retains personal credentials and endpoints, never executable client files.

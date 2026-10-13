@@ -15,8 +15,20 @@ import (
 
 func HTTPSGateway(ctx context.Context, listen, cert, key, root, atlasUpstream, gitUpstream string, extraRoutes string) error {
 	mux := http.NewServeMux()
-	routes:=map[string]string{"/atlas-api/":atlasUpstream,"/atlas-git/":gitUpstream}
-	for _,entry:=range strings.Split(extraRoutes,","){if entry==""{continue};prefix,endpoint,ok:=strings.Cut(entry,"=");if !ok||!strings.HasPrefix(prefix,"/")||!strings.HasSuffix(prefix,"/")||strings.Contains(prefix,"..")||prefix=="/"{return fmt.Errorf("invalid additional route")};if _,exists:=routes[prefix];exists{return fmt.Errorf("route already reserved")};routes[prefix]=endpoint}
+	routes := map[string]string{"/atlas-api/": atlasUpstream, "/atlas-git/": gitUpstream}
+	for _, entry := range strings.Split(extraRoutes, ",") {
+		if entry == "" {
+			continue
+		}
+		prefix, endpoint, ok := strings.Cut(entry, "=")
+		if !ok || !strings.HasPrefix(prefix, "/") || !strings.HasSuffix(prefix, "/") || strings.Contains(prefix, "..") || prefix == "/" {
+			return fmt.Errorf("invalid additional route")
+		}
+		if _, exists := routes[prefix]; exists {
+			return fmt.Errorf("route already reserved")
+		}
+		routes[prefix] = endpoint
+	}
 	for prefix, endpoint := range routes {
 		u, e := url.Parse(endpoint)
 		if e != nil || u.Scheme != "http" || u.Hostname() != "127.0.0.1" {
@@ -30,11 +42,11 @@ func HTTPSGateway(ctx context.Context, listen, cert, key, root, atlasUpstream, g
 			r.URL.Path = "/" + strings.TrimPrefix(r.URL.Path, base)
 			r.URL.RawPath = ""
 			r.Header.Set("X-Forwarded-Proto", "https")
-			r.Header.Set("X-Forwarded-Prefix",strings.TrimRight(base,"/"))
-			r.Header.Set("X-Forwarded-Host",r.Host)
+			r.Header.Set("X-Forwarded-Prefix", strings.TrimRight(base, "/"))
+			r.Header.Set("X-Forwarded-Host", r.Host)
 		}
 		p.Transport = &http.Transport{Proxy: nil, MaxIdleConns: 64, MaxIdleConnsPerHost: 32, IdleConnTimeout: 90 * time.Second, ResponseHeaderTimeout: 55 * time.Second}
-		p.FlushInterval=-1
+		p.FlushInterval = -1
 		mux.Handle(prefix, p)
 	}
 	files := http.FileServer(http.Dir(root))

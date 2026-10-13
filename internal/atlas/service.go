@@ -43,8 +43,9 @@ func InstalledExecutable() (string, error) {
 	if _, e = os.Stat(target); e == nil {
 		a, ae := exec.Command(source, "version").Output()
 		b, be := exec.Command(target, "version").Output()
-		fromInfo,fe:=os.Stat(source);toInfo,te:=os.Stat(target)
-		if ae == nil && be == nil && fe==nil&&te==nil&&fromInfo.Size()==toInfo.Size()&&bytes.Equal(a, b) {
+		fromInfo, fe := os.Stat(source)
+		toInfo, te := os.Stat(target)
+		if ae == nil && be == nil && fe == nil && te == nil && fromInfo.Size() == toInfo.Size() && bytes.Equal(a, b) {
 			return target, nil
 		}
 	}
@@ -84,7 +85,9 @@ func xmlText(s string) string {
 // User services retain the receiver across logins and restart failed processes.
 // No administrator access, system proxy changes, or cloud scheduler is needed.
 func InstallReceiver() error {
-	if _,e:=proxyConfig();e!=nil{return e}
+	if _, e := proxyConfig(); e != nil {
+		return e
+	}
 	executable, e := InstalledExecutable()
 	if e != nil {
 		return e
@@ -107,7 +110,9 @@ func InstallReceiver() error {
 		}
 		domain := "gui/" + strconv.Itoa(os.Getuid())
 		check := exec.Command("launchctl", "print", domain+"/"+label)
-		if check.Run()==nil{exec.Command("launchctl","bootout",domain+"/"+label).Run()}
+		if check.Run() == nil {
+			exec.Command("launchctl", "bootout", domain+"/"+label).Run()
+		}
 		if state, e := Load(filepath.Join(Home(), "receiver-status.json")); e == nil && N(state, "pid") > 0 {
 			heartbeat, e := time.Parse(time.RFC3339, S(state, "heartbeat"))
 			if e == nil && time.Since(heartbeat) >= 0 && time.Since(heartbeat) < 10*time.Second {
@@ -151,7 +156,9 @@ func InstallReceiver() error {
 		if e != nil {
 			return fmt.Errorf("receiver login task: %w: %s", e, strings.TrimSpace(string(output)))
 		}
-		if output,e:=exec.Command("schtasks","/Run","/TN",name).CombinedOutput();e!=nil{return fmt.Errorf("receiver login task start: %w: %s",e,strings.TrimSpace(string(output)))}
+		if output, e := exec.Command("schtasks", "/Run", "/TN", name).CombinedOutput(); e != nil {
+			return fmt.Errorf("receiver login task start: %w: %s", e, strings.TrimSpace(string(output)))
+		}
 	}
-	return Save(filepath.Join(Home(),"receiver-service.json"),Object{"managed":true,"name":name})
+	return Save(filepath.Join(Home(), "receiver-service.json"), Object{"managed": true, "name": name})
 }

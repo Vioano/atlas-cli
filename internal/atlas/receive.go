@@ -132,7 +132,11 @@ func Receive(ctx context.Context) error {
 	if err = lockReceiver(lock); err != nil {
 		return err
 	}
-	go func(){if err:=GitProxy(ctx);err!=nil{Save(filepath.Join(Home(),"git-proxy-status.json"),Object{"error":err.Error(),"at":time.Now().UTC().Format(time.RFC3339)})}}()
+	go func() {
+		if err := GitProxy(ctx); err != nil {
+			Save(filepath.Join(Home(), "git-proxy-status.json"), Object{"error": err.Error(), "at": time.Now().UTC().Format(time.RFC3339)})
+		}
+	}()
 	running := map[string]bool{}
 	for {
 		paths, _ := filepath.Glob(filepath.Join(Home(), "bindings", "*.json"))
@@ -166,7 +170,7 @@ func receiveBinding(ctx context.Context, path string) {
 		if e == nil {
 			b = latest
 		}
-		poll,cancel:=context.WithTimeout(ctx,15*time.Second)
+		poll, cancel := context.WithTimeout(ctx, 15*time.Second)
 		page, e := c.Call(poll, "GET", "/v1/events?channel="+url.QueryEscape(S(b, "channel"))+"&after="+fmt.Sprint(N(b, "cursor"))+"&wait=10", nil)
 		cancel()
 		if e != nil {
@@ -280,11 +284,14 @@ func deliver(ctx context.Context, b, m Object) error {
 	return Save(journal, r)
 }
 func StartReceiver() error {
-	if managed,e:=Load(filepath.Join(Home(),"receiver-service.json"));e==nil&&B(managed,"managed") {
+	if managed, e := Load(filepath.Join(Home(), "receiver-service.json")); e == nil && B(managed, "managed") {
 		switch runtime.GOOS {
-		case "darwin":return exec.Command("launchctl","kickstart","gui/"+fmt.Sprint(os.Getuid())+"/top.atlas."+S(managed,"name")).Run()
-		case "linux":return exec.Command("systemctl","--user","start",S(managed,"name")+".service").Run()
-		case "windows":return exec.Command("schtasks","/Run","/TN",S(managed,"name")).Run()
+		case "darwin":
+			return exec.Command("launchctl", "kickstart", "gui/"+fmt.Sprint(os.Getuid())+"/top.atlas."+S(managed, "name")).Run()
+		case "linux":
+			return exec.Command("systemctl", "--user", "start", S(managed, "name")+".service").Run()
+		case "windows":
+			return exec.Command("schtasks", "/Run", "/TN", S(managed, "name")).Run()
 		}
 	}
 	executable, err := os.Executable()

@@ -91,12 +91,24 @@ func (t *Transport) connect(ctx context.Context) (*ssh.Client, error) {
 }
 func (t *Transport) keepAlive(client *ssh.Client) {
 	for {
-		time.Sleep(5*time.Second)
-		answer:=make(chan error,1)
-		go func(){_,_,err:=client.SendRequest("keepalive@openssh.com",true,nil);answer<-err}()
+		time.Sleep(5 * time.Second)
+		answer := make(chan error, 1)
+		go func() { _, _, err := client.SendRequest("keepalive@openssh.com", true, nil); answer <- err }()
 		var err error
-		select{case err=<-answer:case <-time.After(4*time.Second):err=fmt.Errorf("SSH keepalive timed out")}
-		if err!=nil{client.Close();t.mu.Lock();if t.ssh==client{t.ssh=nil};t.mu.Unlock();return}
+		select {
+		case err = <-answer:
+		case <-time.After(4 * time.Second):
+			err = fmt.Errorf("SSH keepalive timed out")
+		}
+		if err != nil {
+			client.Close()
+			t.mu.Lock()
+			if t.ssh == client {
+				t.ssh = nil
+			}
+			t.mu.Unlock()
+			return
+		}
 	}
 }
 func (t *Transport) connectGateway(ctx context.Context, g Object, timeout time.Duration) (*ssh.Client, error) {

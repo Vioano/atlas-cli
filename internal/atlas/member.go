@@ -92,6 +92,12 @@ func Join(ctx context.Context, key string) (Object, error) {
 	if S(pending, "invitation") != S(inv, "invitation") {
 		return nil, fmt.Errorf("another enrollment is pending; original state preserved")
 	}
+	if id := S(pending, "enrollment_id"); strings.HasPrefix(id, "-") || strings.HasPrefix(id, "_") {
+		pending["enrollment_id"] = "a" + id
+		if err = Save(pendingPath, pending); err != nil {
+			return nil, err
+		}
+	}
 	p := Object{"url": S(inv, "url"), "gateway": inv["gateway"], "gitea": inv["gitea"]}
 	if B(inv, "prefer_https") {
 		if err = HTTPSProfile(p, inv); err != nil {
