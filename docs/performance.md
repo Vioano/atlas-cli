@@ -41,6 +41,8 @@ A loopback fault fixture ran the actual receiver worker against three successive
 
 Version 0.2.9 adds a single local busy-turn admission interface for existing receiver owners. It reuses their already-persisted wake UUID and reads reminder text on stdin. It neither polls Atlas nor creates a receiver, client identity, cursor or idle queue item. An actual Mac candidate called the existing busy Desktop chat in 1.026 seconds; Desktop confirmed acceptance and the current agent actually read the marker in that same active turn. A separately selected unused client home remained absent. This tests the adapter, not adoption by the old TapTap receiver or an independent Windows Desktop. Fixtures cover original request-ID preservation, accepted/idle/uncertain IPC outcomes and the overall deadline; actual reading is recorded separately from the returned `agent_read: false`. The original owner retains its queue and journal policy. See `evidence/single-admission-v029.json` and `legacy-receiver-admission.md`.
 
+[The 0.2.9 release-triggered run](https://github.com/Vioano/atlas-cli/actions/runs/38473522221) passed native Windows tests and the actual published installer. The public macOS binary also reports 0.2.9. This remains distinct from legacy receiver adoption and real Windows Desktop acceptance.
+
 ## Latency samples
 
 Twenty sequential health requests per scenario, including the first cold request; no failures. Measurements were not simultaneous. They describe this network and time, not all teammates or a universal SLA.

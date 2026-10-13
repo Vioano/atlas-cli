@@ -13,5 +13,9 @@
   "new_receiver_started": false,
   "atlas_message_or_read_receipt_created": false,
   "legacy_taptap_receiver_adopted": false,
-  "independent_windows_desktop_acceptance": false
+  "independent_windows_desktop_acceptance": false,
+  "public_binary_version_readback": "atlas 0.2.9",
+  "source_commit": "2ad5c0ecbb3a170987978b18939da2169c2e1581",
+  "native_windows_release_ci": "https://github.com/Vioano/atlas-cli/actions/runs/38473522221",
+  "native_windows_ci_conclusion": "success"
 }
