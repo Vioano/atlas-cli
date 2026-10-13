@@ -37,6 +37,8 @@ An isolated receiver test then reproduced a cursor-loss bug in the existing CLI:
 
 A loopback fault fixture ran the actual receiver worker against three successive failures: HTTP 503, an incomplete JSON body shorter than its declared Content-Length, and empty HTTP 200. The worker recovered after 7.039 seconds in the Linux fixture, queued the available message once and advanced to cursor 140. A new worker then simulated restarting after admission had been journaled but before cursor persistence; it reused the durable journal and did not submit the message again. The original credential, sender authorization and binding cursor seed stayed intact. Admission used a native process fixture, not a real Codex agent, so this is transport/state recovery evidence rather than actual agent reading or whole-laptop relocation. See `evidence/receiver-recovery-v028.json` and `internal/atlas/receiver_recovery_test.go`.
 
+[The 0.2.8 release-triggered CI](https://github.com/Vioano/atlas-cli/actions/runs/38471650579) passed native Windows recovery tests and the actual published installer. The captain's publicly downloaded macOS executable was then installed into the existing native receiver. A fresh successful poll against the real server confirmed that the original cursor seed, previous sender authorizations and profile were preserved, the runtime cursor did not reset, and no poll error remained. This upgrade covered the captain's new native CLI receiver only; the original TapTap general receiver was not migrated or replaced.
+
 ## Latency samples
 
 Twenty sequential health requests per scenario, including the first cold request; no failures. Measurements were not simultaneous. They describe this network and time, not all teammates or a universal SLA.

@@ -22,5 +22,18 @@
     "TestEmptySuccessfulEventResponseDoesNotResetCursor",
     "TestEventPageValidationRejectsRollbackAndMalformedProgress",
     "TestReceiverRecoversPartialResponseAndDoesNotRequeueAfterRestart"
-  ]
+  ],
+  "source_commit": "8c41148a4f29f68d762762f5259623563a00bed1",
+  "native_windows_release_ci": "https://github.com/Vioano/atlas-cli/actions/runs/38471650579",
+  "native_windows_ci_conclusion": "success",
+  "live_captain_upgrade": {
+    "public_downloaded_binary_version": "atlas 0.2.8",
+    "live_event_poll_after_upgrade": true,
+    "original_cursor_seed_retained": true,
+    "cursor_not_reset": true,
+    "prior_authorized_senders_retained": true,
+    "profile_unchanged": true,
+    "last_error": null,
+    "legacy_general_receiver_upgraded": false
+  }
 }
