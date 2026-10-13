@@ -1,0 +1,14 @@
+{
+  "source_commit": "27771023e9d3109a1f889657ba626172f938b0e8",
+  "release": "v0.2.10",
+  "windows_release_ci": {
+    "id": 38481594775,
+    "conclusion": "success"
+  },
+  "public_version_specific_installer_http": 200,
+  "public_downloaded_mac_version": "0.2.10",
+  "immutable_mirror": "https://sub.kessokuu.top/atlas/v0.2.10/",
+  "old_root_bootstrap_retained": true,
+  "native_captain_receiver_binary_not_rebound": true,
+  "independent_Windows_Desktop_acceptance": false
+}

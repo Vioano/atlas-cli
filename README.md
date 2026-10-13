@@ -55,6 +55,10 @@ Transport uses pinned SSH, pooled HTTP connections, optional discovered LAN
 routes, and a certificate-verified HTTPS fallback. A transparent VPN can intercept
 native SSH despite an empty application proxy setting; HTTPS compatibility does
 not require changing the teammate's entire VPN.
+From 0.2.11, preferred TCP routes allow two seconds for name lookup and connection
+before falling back. The earlier 0.8-second allowance could abandon a healthy
+LAN route during its first discovery. The last route retains its existing
+eight-second TCP allowance; SSH authentication remains pinned and bounded.
 
 `--agent current` uses `CODEX_THREAD_ID`. Desktop owner discovery binds the actual existing chat. Busy delivery uses the
 existing-turn steer operation; idle delivery uses official `codex queue`. Raw

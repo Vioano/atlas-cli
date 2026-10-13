@@ -1,0 +1,357 @@
+{
+  "schema": "atlas-temporary-cloudflare-route-probe/1",
+  "scope": "Synthetic random data and health only; no production Atlas/Gitea upstream or credentials exposed through the temporary tunnel",
+  "vendor_binary_version": "2026.10.0",
+  "normal": {
+    "registered_edge_location": "lax01",
+    "results": [
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 1,
+        "seconds": 1.37077925
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 1,
+        "seconds": 1.326938875
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 2,
+        "seconds": 0.633283916
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 2,
+        "seconds": 0.578611125
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 3,
+        "seconds": 0.56883975
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 3,
+        "seconds": 0.653996125
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 4,
+        "seconds": 0.6433535
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 4,
+        "seconds": 0.582380458
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 5,
+        "seconds": 0.587513959
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 5,
+        "seconds": 0.624601833
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 6,
+        "seconds": 0.625073625
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 6,
+        "seconds": 0.575250333
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 7,
+        "seconds": 0.589390958
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 7,
+        "seconds": 0.644718458
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 8,
+        "seconds": 0.636268375
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 8,
+        "seconds": 0.584897292
+      },
+      {
+        "bytes": 8388608,
+        "first_byte_seconds": 2.221392375,
+        "length_verified": true,
+        "mbps": 16.833259357544033,
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_bulk",
+        "sample": 1,
+        "seconds": 3.986682708
+      },
+      {
+        "bytes": 8388608,
+        "first_byte_seconds": 0.775111875,
+        "length_verified": true,
+        "mbps": 24.765067163969544,
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_bulk",
+        "sample": 2,
+        "seconds": 2.709819584
+      }
+    ],
+    "aggregate": {
+      "temporary_tunnel_synthetic_bulk": {
+        "n": 2,
+        "median_seconds": 3.348251146,
+        "seconds": [
+          3.986682708,
+          2.709819584
+        ],
+        "mbps": [
+          16.833259357544033,
+          24.765067163969544
+        ]
+      },
+      "temporary_tunnel_synthetic_health": {
+        "n": 8,
+        "median_seconds": 0.6398109375000001,
+        "seconds": [
+          1.326938875,
+          0.633283916,
+          0.653996125,
+          0.6433535,
+          0.624601833,
+          0.625073625,
+          0.644718458,
+          0.636268375
+        ],
+        "mbps": []
+      },
+      "existing_relay_health": {
+        "n": 8,
+        "median_seconds": 0.583638875,
+        "seconds": [
+          1.37077925,
+          0.578611125,
+          0.56883975,
+          0.582380458,
+          0.587513959,
+          0.575250333,
+          0.589390958,
+          0.584897292
+        ],
+        "mbps": []
+      }
+    }
+  },
+  "physical_server": {
+    "registered_edge_location": "lax01",
+    "server_route_and_socket_proof": {
+      "dedicated_dynamic_uid": true,
+      "own_UID_only_main_table_rule": true,
+      "DNS_file_mount_only_in_test_service": true,
+      "socket_on_wifi": true,
+      "physical_rtt_ms_snapshot": 179.098
+    },
+    "results": [
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 1,
+        "seconds": 1.082791666
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 1,
+        "seconds": 1.220801041
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 2,
+        "seconds": 0.526086167
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 2,
+        "seconds": 0.570287458
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 3,
+        "seconds": 0.730244917
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 3,
+        "seconds": 0.512532292
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 4,
+        "seconds": 0.757571667
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 4,
+        "seconds": 0.58630425
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 5,
+        "seconds": 0.558041625
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 5,
+        "seconds": 0.560396958
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 6,
+        "seconds": 0.51439575
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 6,
+        "seconds": 0.562715917
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 7,
+        "seconds": 0.566011541
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 7,
+        "seconds": 0.493687458
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_health",
+        "sample": 8,
+        "seconds": 0.513027041
+      },
+      {
+        "protocol": "HTTP/2.0",
+        "route": "existing_relay_health",
+        "sample": 8,
+        "seconds": 0.5648725
+      },
+      {
+        "bytes": 8388608,
+        "first_byte_seconds": 1.419166417,
+        "length_verified": true,
+        "mbps": 22.03563758265912,
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_bulk",
+        "sample": 1,
+        "seconds": 3.045469583
+      },
+      {
+        "bytes": 8388608,
+        "first_byte_seconds": 0.593757375,
+        "length_verified": true,
+        "mbps": 31.6546597871293,
+        "protocol": "HTTP/2.0",
+        "route": "temporary_tunnel_synthetic_bulk",
+        "sample": 2,
+        "seconds": 2.120031125
+      }
+    ],
+    "aggregate": {
+      "temporary_tunnel_synthetic_bulk": {
+        "n": 2,
+        "median_seconds": 2.582750354,
+        "seconds": [
+          3.045469583,
+          2.120031125
+        ],
+        "mbps": [
+          22.03563758265912,
+          31.6546597871293
+        ]
+      },
+      "temporary_tunnel_synthetic_health": {
+        "n": 8,
+        "median_seconds": 0.5202409585000001,
+        "seconds": [
+          1.220801041,
+          0.526086167,
+          0.512532292,
+          0.757571667,
+          0.560396958,
+          0.51439575,
+          0.493687458,
+          0.513027041
+        ],
+        "mbps": []
+      },
+      "existing_relay_health": {
+        "n": 8,
+        "median_seconds": 0.5681494995,
+        "seconds": [
+          1.082791666,
+          0.570287458,
+          0.730244917,
+          0.58630425,
+          0.558041625,
+          0.562715917,
+          0.566011541,
+          0.5648725
+        ],
+        "mbps": []
+      }
+    }
+  },
+  "cleanup": {
+    "probe_main_pid_zero": true,
+    "UID_route_rule_removed": true,
+    "original_route_rules_exactly_restored": true,
+    "three_production_tunnel_pids_unchanged": true
+  },
+  "limitations": [
+    "Different synthetic and original health handlers; stage comparison does not isolate an application speedup.",
+    "Normal and physical server stages were sampled in separate runs; small samples and varying link load limit causal attribution.",
+    "Captain Mac client still uses its existing route; independent city endpoints were not tested.",
+    "Both temporary tunnels registered at lax01; this is not a domestic regional path.",
+    "Quick Tunnels have unstable hostnames, no uptime guarantee and no SSE support; not used for production."
+  ],
+  "decision": "Retain the deployed legacy/public service paths. A temporary tunnel alone does not remove the distant edge route. Further regional alternatives and actual access capacity still require evidence.",
+  "source": "https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/"
+}

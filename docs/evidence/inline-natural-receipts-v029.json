@@ -1,0 +1,23 @@
+{
+  "schema": "atlas-inline-natural-receipts/1",
+  "scope": "Three natural business messages after the original owner deployed complete saved envelopes in busy reminders; no new test marker.",
+  "clock": "server message creation to first matching read receipt on same server clock",
+  "cases": [
+    {
+      "sample": 1,
+      "send_to_first_read_receipt_seconds": 31.581711292266846,
+      "local_actual_read": true
+    },
+    {
+      "sample": 2,
+      "send_to_first_read_receipt_seconds": 27.931821823120117,
+      "local_actual_read": true
+    },
+    {
+      "sample": 3,
+      "send_to_first_read_receipt_seconds": 24.156114101409912,
+      "local_actual_read": true
+    }
+  ],
+  "conclusion": "All three are below 60 seconds and actually read. Observational before/after, not randomized causal attribution or a whole-team percentile SLA."
+}

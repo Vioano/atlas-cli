@@ -84,9 +84,16 @@ change in the same singleton service. Seven isolated checks passed; eight old
 request IDs, texts and outcomes stayed intact. Whole batches exceeding 64 KiB
 or failing source validation retain file-based reading, without truncation.
 The service PID changed during its managed restart. The three timing cases above
-precede that upgrade. Its live reading effect awaits the next natural message;
-it is not a measured improvement or a deadline guarantee. See
+precede that upgrade; subsequent observations follow below. Deployment and the
+isolated checks alone did not establish a live improvement or deadline guarantee. See
 [natural message evidence](evidence/natural-legacy-receipts-v029.json).
+
+Three later natural business messages using the new inline-original path were
+actually read and acknowledged within **31.582, 27.932 and 24.156 seconds**.
+Their complete originals remained in the original owner's journal. These are
+observed successful cases, not a randomized causal comparison or a whole-team
+percentile guarantee. No new test marker or reply loop was added. See
+[the subsequent receipts](evidence/inline-natural-receipts-v029.json).
 
 Full onboarding, transport admission, actual agent reading and performing the
 requested task remain distinct measurements. A CLI cannot guarantee the model

@@ -74,7 +74,9 @@ func (t *Transport) connect(ctx context.Context) (*ssh.Client, error) {
 		}
 		timeout := 8 * time.Second
 		if i < len(routes)-1 {
-			timeout = 800 * time.Millisecond
+			// Local discovery and the first WiFi TCP handshake can exceed
+			// 800 ms. Premature fallback puts a local bulk transfer on WAN.
+			timeout = 2 * time.Second
 		}
 		c, e := t.connectGateway(ctx, merged, timeout)
 		if e != nil {

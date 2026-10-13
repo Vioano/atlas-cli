@@ -1,0 +1,18 @@
+{
+  "scope": "Candidate legacy proxy, isolated ATLAS_HOME, existing captain credentials and private QA LFS object; original profile and daemon untouched",
+  "batch_http": 200,
+  "SSH_route_destination_port": 53317,
+  "download_http": 200,
+  "bytes": 8388608,
+  "lfs_oid_verified": true,
+  "local_auth_contract_preserved": true,
+  "action_url_stayed_on_loopback": true,
+  "seconds": 1.9985102500068024,
+  "original_config_bytes_preserved": true,
+  "slow_lookup_fixture_seconds": 1.2,
+  "old_preferred_TCP_timeout_seconds": 0.8,
+  "candidate_preferred_TCP_timeout_seconds": 2,
+  "controlled_fixture_old_policy": "abandoned healthy preferred route",
+  "controlled_fixture_new_policy": "authenticated on preferred route",
+  "measurement_limit": "Different runs and warm-cache states. This 8MiB LAN functional result cannot be presented as a universal20x speedup versus the earlier WAN run."
+}
