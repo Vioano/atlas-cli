@@ -1,0 +1,40 @@
+{
+  "baseline": {
+    "ok": true,
+    "status": 200,
+    "seconds": 1.3295431250007823
+  },
+  "samples": [
+    {
+      "ok": false,
+      "error": "HTTPError",
+      "seconds": 0.9336676250677556,
+      "elapsed_seconds": 1.205606000032276
+    },
+    {
+      "ok": false,
+      "error": "HTTPError",
+      "seconds": 0.8121691250707954,
+      "elapsed_seconds": 2.5247221670579165
+    },
+    {
+      "ok": false,
+      "error": "HTTPError",
+      "seconds": 0.6160920830443501,
+      "elapsed_seconds": 3.645352042047307
+    },
+    {
+      "ok": false,
+      "error": "HTTPError",
+      "seconds": 0.7971346669364721,
+      "elapsed_seconds": 4.949719125055708
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "seconds": 1.3646457080030814,
+      "elapsed_seconds": 6.821026292047463
+    }
+  ],
+  "recovered": true
+}

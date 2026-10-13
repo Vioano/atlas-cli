@@ -1,0 +1,11 @@
+{
+  "scope": "Two existing Mac chats, fresh QA identity, fresh private repository, HTTPS client.",
+  "created_seconds": 5.131187792052515,
+  "downloaded_version": "atlas 0.2.2",
+  "downloaded_seconds": 7.949411417008378,
+  "joined_seconds": 13.969756875070743,
+  "repository_read_seconds": 16.88503970799502,
+  "sent_seconds": 18.212931249989197,
+  "both_actual_read_observed_seconds": 59.685654291999526,
+  "within_60_seconds": true
+}

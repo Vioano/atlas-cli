@@ -4,6 +4,8 @@ The measured development target is creation, membership, repository access and a
 
 Initial real private project creation plus invitation: 4.581 seconds. First real QA enrollment and current Desktop binding: 11.849 seconds. A later fresh 0.2.0 project plus invitation and binding took 4.863 seconds; a fresh QA identity enrollment and binding took 11.559 seconds. These are different identities on the captain Mac, not a Windows acceptance result. Public Windows ZIP download: 3,891,061 bytes in 1.719 seconds with HTTP 200 and default TLS verification. Do not add these observations and call the sum a Windows end-to-end test.
 
+A continuous version 0.2.2 acceptance run on one Mac used a fresh private project, a fresh QA identity and two distinct existing Desktop chats. One monotonic clock measured these cumulative times: project and invitation 5.131 seconds, publicly downloaded executable reporting 0.2.2 at 7.949 seconds, HTTPS membership and supervised binding at 13.970 seconds, private clone at 16.885 seconds, and first message accepted at 18.213 seconds. Both agents actually read and acknowledged their messages, and the same observer saw both receipts by **59.686 seconds**. No human forwarded a message or issued a check-in prompt. This is one successful complete run, not a Windows run or a percentile SLA. Receipt polling provides an upper bound on completion time. Sanitized measurements are in `evidence/core-e2e-v022.json`.
+
 ## Actual bottlenecks removed
 
 - Initial event synchronization inherited a 45-second long-poll default. It now explicitly uses `wait=0`. Background delivery waits 10 seconds, with a 15-second request deadline.
@@ -12,6 +14,10 @@ Initial real private project creation plus invitation: 4.581 seconds. First real
 - Certificate-verified HTTPS provides compatibility when a transparent VPN intercepts SSH. Windows invitation commands select HTTPS. Existing identities and SSH entrances are preserved.
 - Git LFS batch action URLs are translated by an authenticated loopback proxy. Private server credentials never appear in Git remote URLs. A 1 MiB payload was uploaded and independently downloaded with exact byte comparison.
 - Busy Desktop delivery uses its existing-turn steer operation. Idle delivery uses official Codex queue. Raw turn/start is disabled. Actual busy bidirectional messages 689/691 and read receipts were observed in the same existing Mac turn. Version 0.2.2 also passed delivery between two distinct existing Mac chats: message 729 started the idle recipient through Codex queue, and reply 739 entered the busy sender through Desktop steer. Both were actually read and acknowledged. Windows busy/idle behavior still requires live verification.
+
+A fresh post-fix message 742 automatically woke the idle chat; reply 743 automatically entered the busy chat. Both agents recorded actual read receipts without a human forwarding or asking them to check messages. The server's own clock measured 24.878 seconds from the first message to its read receipt and 7.842 seconds from the reply to its read receipt, or 32.885 seconds for the complete communication exchange. This includes model scheduling and execution. The earlier message 729 waited almost 20 minutes for the idle-state bug to be fixed; it is not a successful latency measurement. Cross-host journal timestamps are not used for sub-second claims because their clocks differ and the journals have whole-second precision.
+
+Killing only the new HTTPS outbound tunnel process produced temporary request failures, followed by an authenticated HTTPS manifest response after 6.821 seconds, measured with one client's monotonic clock. Systemd restarted the process. The legacy tunnel, review tunnel, local Atlas and local Gitea remained active. This tests tunnel-process recovery, not moving the entire laptop to a different WiFi.
 
 ## Latency samples
 
