@@ -1,0 +1,12 @@
+{
+  "elapsed_seconds": 8.644486792036332,
+  "invitation_lines": 2,
+  "original_identity_bytes_preserved": true,
+  "token_preserved": true,
+  "git_password_preserved": true,
+  "auth_url_preserved": true,
+  "enrollment_called": false,
+  "private_clone_passed": true,
+  "old_binding_retained": true,
+  "repeated_binding_kept_same_receiver_pid": true
+}

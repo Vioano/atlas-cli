@@ -1,0 +1,10 @@
+{
+  "unreachable_previous_git_proxy_status": 502,
+  "explicit_https_existing_proxy_status": 200,
+  "private_repository_read": true,
+  "actual_https_transport_saved": "https",
+  "original_identity_bytes_preserved": true,
+  "existing_token_preserved": true,
+  "enrollment_called": false,
+  "migration_and_read_seconds": 5.301347334054299
+}

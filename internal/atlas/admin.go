@@ -153,7 +153,15 @@ func (a *Admin) Grant(ctx context.Context, repo, project, actor, role string) (O
 	if _, err := a.Atlas.Call(ctx, "POST", "/v1/grants", Object{"actor": actor, "project": project, "role": role}); err != nil {
 		return nil, err
 	}
-	return Object{"actor": actor, "repository": repo, "project": project, "role": role, "existing_credentials_preserved": true}, nil
+	access := Object{"protocol": "atlas-access/1", "actor": actor, "url": S(a.Atlas.Profile, "url"), "project": project, "channel": project + "-general", "gitea": Object{"repository": repo}}
+	if endpoint := S(a.Settings, "https_endpoint"); endpoint != "" {
+		access["https_endpoint"] = endpoint
+	}
+	key, err := Pack(access)
+	if err != nil {
+		return nil, err
+	}
+	return Object{"actor": actor, "repository": repo, "project": project, "role": role, "existing_credentials_preserved": true, "key": key}, nil
 }
 func (a *Admin) Invite(ctx context.Context, repo, project, actor, role string, days int) (Object, error) {
 	if err := Name(actor); err != nil {

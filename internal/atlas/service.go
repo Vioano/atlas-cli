@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -20,14 +21,14 @@ func serviceName() string {
 	sum := sha256.Sum256([]byte(Home()))
 	return "atlas-" + hex.EncodeToString(sum[:4])
 }
-func InstalledExecutable() (string, error) {
+func InstalledExecutable() (string, bool, error) {
 	source, e := os.Executable()
 	if e != nil {
-		return "", e
+		return "", false, e
 	}
 	source, e = filepath.EvalSymlinks(source)
 	if e != nil {
-		return "", e
+		return "", false, e
 	}
 	name := "atlas"
 	if runtime.GOOS == "windows" {
@@ -35,10 +36,10 @@ func InstalledExecutable() (string, error) {
 	}
 	target := filepath.Join(Home(), "bin", name)
 	if source == target {
-		return target, nil
+		return target, false, nil
 	}
 	if e = PrivateDir(filepath.Dir(target)); e != nil {
-		return "", e
+		return "", false, e
 	}
 	if _, e = os.Stat(target); e == nil {
 		a, ae := exec.Command(source, "version").Output()
@@ -46,17 +47,22 @@ func InstalledExecutable() (string, error) {
 		fromInfo, fe := os.Stat(source)
 		toInfo, te := os.Stat(target)
 		if ae == nil && be == nil && fe == nil && te == nil && fromInfo.Size() == toInfo.Size() && bytes.Equal(a, b) {
-			return target, nil
+			return target, false, nil
+		}
+		if runtime.GOOS == "windows" {
+			// Windows holds a running executable open. Stop only this Home's
+			// native task before replacing its release, preserving old clients.
+			exec.Command("schtasks", "/End", "/TN", serviceName()).Run()
 		}
 	}
 	from, e := os.Open(source)
 	if e != nil {
-		return "", e
+		return "", false, e
 	}
 	defer from.Close()
 	tmp, e := os.CreateTemp(filepath.Dir(target), ".atlas-bin-*")
 	if e != nil {
-		return "", e
+		return "", false, e
 	}
 	path := tmp.Name()
 	defer os.Remove(path)
@@ -66,15 +72,48 @@ func InstalledExecutable() (string, error) {
 	}
 	closeErr := tmp.Close()
 	if e != nil {
-		return "", e
+		return "", false, e
 	}
 	if closeErr != nil {
-		return "", closeErr
+		return "", false, closeErr
 	}
-	if e = os.Rename(path, target); e != nil {
-		return "", e
+	e = os.Rename(path, target)
+	for attempt := 0; runtime.GOOS == "windows" && e != nil && attempt < 4; attempt++ {
+		time.Sleep(time.Duration(100*(1<<attempt)) * time.Millisecond)
+		e = os.Rename(path, target)
 	}
-	return target, nil
+	if e != nil {
+		return "", false, e
+	}
+	return target, true, nil
+}
+
+func proxyFingerprint() (string, error) {
+	settings, err := Load(filepath.Join(Home(), "config.json"))
+	if err != nil {
+		return "", err
+	}
+	p, c, err := OpenProfile(settings)
+	if err != nil {
+		return "", err
+	}
+	c.Transport.Close()
+	g := Clone(O(p, "gitea"))
+	if path := S(settings, "gitea_profile"); path != "" {
+		g, err = Load(path)
+		if err != nil {
+			return "", err
+		}
+	}
+	delete(g, "repository")
+	data, err := json.Marshal(Object{"gateway": p["gateway"], "url": p["url"], "actor": p["actor"], "gitea": g})
+	if err != nil {
+		return "", err
+	}
+	// Compare only effective routing and Git authentication. Store a digest
+	// rather than another credential copy; changing projects does not restart.
+	sum := sha256.Sum256(data)
+	return hex.EncodeToString(sum[:]), nil
 }
 func xmlText(s string) string {
 	var b strings.Builder
@@ -88,7 +127,14 @@ func InstallReceiver() error {
 	if _, e := proxyConfig(); e != nil {
 		return e
 	}
-	executable, e := InstalledExecutable()
+	fingerprint, e := proxyFingerprint()
+	if e != nil {
+		return e
+	}
+	previous, _ := Load(filepath.Join(Home(), "receiver-service.json"))
+	routeChanged := S(previous, "proxy_fingerprint") != fingerprint
+	metadata := Object{"managed": true, "name": serviceName(), "proxy_fingerprint": fingerprint}
+	executable, changed, e := InstalledExecutable()
 	if e != nil {
 		return e
 	}
@@ -110,8 +156,15 @@ func InstallReceiver() error {
 		}
 		domain := "gui/" + strconv.Itoa(os.Getuid())
 		check := exec.Command("launchctl", "print", domain+"/"+label)
-		if check.Run() == nil {
-			exec.Command("launchctl", "bootout", domain+"/"+label).Run()
+		loaded := check.Run() == nil
+		if loaded && !changed && !routeChanged {
+			// Binding workers discover new projects without restarting the service.
+			return Save(filepath.Join(Home(), "receiver-service.json"), metadata)
+		}
+		if loaded {
+			if output, err := exec.Command("launchctl", "bootout", domain+"/"+label).CombinedOutput(); err != nil {
+				return fmt.Errorf("receiver upgrade unload: %w: %s", err, strings.TrimSpace(string(output)))
+			}
 		}
 		if state, e := Load(filepath.Join(Home(), "receiver-status.json")); e == nil && N(state, "pid") > 0 {
 			heartbeat, e := time.Parse(time.RFC3339, S(state, "heartbeat"))
@@ -122,6 +175,12 @@ func InstallReceiver() error {
 			}
 		}
 		output, e := exec.Command("launchctl", "bootstrap", domain, path).CombinedOutput()
+		// launchd can retain an unloaded job briefly. Retry this known transition
+		// only after unloading our own managed job; initial registration is unchanged.
+		for attempt := 0; loaded && e != nil && attempt < 4; attempt++ {
+			time.Sleep(time.Duration(100*(1<<attempt)) * time.Millisecond)
+			output, e = exec.Command("launchctl", "bootstrap", domain, path).CombinedOutput()
+		}
 		if e != nil {
 			return fmt.Errorf("receiver startup registration: %w: %s", e, strings.TrimSpace(string(output)))
 		}
@@ -142,7 +201,15 @@ func InstallReceiver() error {
 				return fmt.Errorf("receiver user service: %w: %s", e, strings.TrimSpace(string(output)))
 			}
 		}
+		if B(previous, "managed") && (changed || routeChanged) {
+			if output, err := exec.Command("systemctl", "--user", "restart", name+".service").CombinedOutput(); err != nil {
+				return fmt.Errorf("receiver upgrade restart: %w: %s", err, strings.TrimSpace(string(output)))
+			}
+		}
 	case "windows":
+		if B(previous, "managed") && routeChanged {
+			exec.Command("schtasks", "/End", "/TN", name).Run()
+		}
 		path := filepath.Join(Home(), "receiver-task.xml")
 		who := os.Getenv("USERNAME")
 		if domain := os.Getenv("USERDOMAIN"); domain != "" {
@@ -160,5 +227,5 @@ func InstallReceiver() error {
 			return fmt.Errorf("receiver login task start: %w: %s", e, strings.TrimSpace(string(output)))
 		}
 	}
-	return Save(filepath.Join(Home(), "receiver-service.json"), Object{"managed": true, "name": name})
+	return Save(filepath.Join(Home(), "receiver-service.json"), metadata)
 }

@@ -28,7 +28,7 @@ func HTTPSProfile(p, inv Object) error {
 	return nil
 }
 
-func Join(ctx context.Context, key string) (Object, error) {
+func Join(ctx context.Context, key string, httpsOrigin ...string) (Object, error) {
 	inv, err := Unpack(key)
 	if err != nil {
 		return nil, err
@@ -36,6 +36,9 @@ func Join(ctx context.Context, key string) (Object, error) {
 	actor := S(inv, "actor")
 	if err = Name(actor); err != nil {
 		return nil, err
+	}
+	if S(inv, "protocol") == "atlas-access/1" {
+		return AttachExisting(ctx, inv, httpsOrigin...)
 	}
 	path := filepath.Join(Home(), "members", actor, "identity.json")
 	if old, e := Load(path); e == nil {
@@ -148,6 +151,89 @@ func Join(ctx context.Context, key string) (Object, error) {
 		return nil, fmt.Errorf("identity saved; repository check: %w", err)
 	}
 	return Object{"profile": path, "actor": actor, "grants": m["grants"], "project": p["project"], "channel": p["channel"], "repository": S(O(p, "gitea"), "repository"), "enrolled_identity_expires": false}, nil
+}
+
+// A grant key selects a project; authentication comes only from the member's
+// existing local identity. Unauthenticated key metadata cannot change its hosts
+// or replace its credentials. Old identity files and bindings are retained.
+func AttachExisting(ctx context.Context, inv Object, httpsOrigin ...string) (Object, error) {
+	project, channel, repo := S(inv, "project"), S(inv, "channel"), S(O(inv, "gitea"), "repository")
+	if err := Name(project); err != nil {
+		return nil, err
+	}
+	parts := strings.Split(repo, "/")
+	if len(parts) != 2 || channel != project+"-general" {
+		return nil, fmt.Errorf("invalid project access key")
+	}
+	for _, part := range parts {
+		if err := Name(part); err != nil {
+			return nil, err
+		}
+	}
+	settings, err := Load(filepath.Join(Home(), "config.json"))
+	if err != nil {
+		return nil, fmt.Errorf("import your existing identity and original bundle first; no new enrollment is performed: %w", err)
+	}
+	p, c, err := OpenProfile(settings)
+	if err != nil {
+		return nil, err
+	}
+	if S(p, "actor") != S(inv, "actor") {
+		c.Transport.Close()
+		return nil, fmt.Errorf("project access belongs to another actor; existing identity preserved")
+	}
+	if len(httpsOrigin) > 0 && httpsOrigin[0] != "" {
+		// Only an explicit CLI option can migrate an existing identity's route.
+		// The grant key itself cannot redirect its authentication.
+		c.Transport.Close()
+		if err = HTTPSProfile(p, Object{"https_endpoint": httpsOrigin[0], "gitea": p["gitea"]}); err != nil {
+			return nil, err
+		}
+		settings["https_endpoint"] = httpsOrigin[0]
+		c = NewClient(p, nil, false)
+	}
+	defer c.Transport.Close()
+	m, err := c.Call(ctx, "GET", "/v1/manifest", nil)
+	if err != nil {
+		return nil, err
+	}
+	if S(O(m, "actor"), "id") != S(p, "actor") {
+		return nil, fmt.Errorf("authenticated actor differs from existing profile")
+	}
+	granted := false
+	for _, grant := range Items(m, "grants") {
+		if S(grant, "project") == project {
+			granted = true
+		}
+	}
+	if !granted {
+		return nil, fmt.Errorf("existing identity has no grant for this project")
+	}
+	g := Clone(O(p, "gitea"))
+	if S(g, "url") == "" {
+		return nil, fmt.Errorf("import your original bundle to reuse existing Git authentication")
+	}
+	git := NewClient(g, c.Transport, true)
+	if _, err = git.Call(ctx, "GET", "/api/v1/repos/"+repo, nil); err != nil {
+		return nil, fmt.Errorf("existing Git identity cannot read the granted repository: %w", err)
+	}
+	g["repository"] = repo
+	p["gitea"], p["project"], p["channel"] = g, project, channel
+	path := filepath.Join(Home(), "projects", project, "identity.json")
+	if err = Save(path, p); err != nil {
+		return nil, err
+	}
+	settings["profile"] = path
+	// OpenProfile already resolved the old bundle into this private copy.
+	// Retaining the active legacy_bundle would overwrite the new project.
+	if old := settings["legacy_bundle"]; old != nil {
+		settings["legacy_bundle_source"] = old
+		delete(settings, "legacy_bundle")
+	}
+	if err = Save(filepath.Join(Home(), "config.json"), settings); err != nil {
+		return nil, err
+	}
+	return Object{"profile": path, "actor": S(p, "actor"), "grants": m["grants"], "project": project, "channel": channel, "repository": repo, "existing_credentials_preserved": true, "enrollment_called": false}, nil
 }
 
 func OpenProfile(settings Object) (Object, *Client, error) {

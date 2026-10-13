@@ -265,7 +265,7 @@ func deliver(ctx context.Context, b, m Object) error {
 				return e
 			}
 		} else {
-			return fmt.Errorf("message %d has an uncertain prior delivery; reconcile it with atlas delivery", id)
+			return fmt.Errorf("message %d has an uncertain prior delivery; inspect %s and the actual Codex chat before retrying", id, journal)
 		}
 	} else if !os.IsNotExist(e) {
 		return e

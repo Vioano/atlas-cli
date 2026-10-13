@@ -41,7 +41,13 @@ atlas setup --atlas-profile owner.json --gitea-profile gitea-owner.json \
 ```
 
 `project grant NAME --member EXISTING_ACTOR --role member` changes only that
-project's repository and communication grant. Repeating `project create` resumes
+project's repository and communication grant. Add `--agent current --out
+PRIVATE_INVITATION.txt` to produce the same two-line handoff for that member.
+Their `join` reuses the locally imported identity, checks the actual new grant
+and repository, and binds the project without enrolling again. The access key
+cannot replace their authentication hosts or credentials. An explicit `--https`
+option can migrate the new project's private profile to a verified TLS origin;
+the original identity file stays intact. Repeating `project create` resumes
 existing resources. New enrollments and messages persist operation identifiers
 before network requests so response interruptions can be reconciled.
 
@@ -79,6 +85,17 @@ https://YOUR_VERIFIED_GATEWAY --agent current` with their existing identity; thi
 does not redeem their invitation again. Binding installs a user LaunchAgent,
 systemd service or Windows login task and prepares the Git proxy before startup.
 Windows runtime acceptance remains pending.
+
+Legacy clients continue with their original configuration and receiver. Importing
+credentials into this CLI does not transfer their event cursor or delivery
+journal. Do not use a new binding to take over an old chat's unread backlog or
+run two receivers for it. A verified receiver migration is a separate operation;
+new project bindings can use the new flow while old chats continue unchanged.
+
+Repeated binding reuses the running receiver. Upgrading its executable restarts
+only that client's service. Unknown Desktop delivery outcomes stop at their
+private delivery journal; reconcile with actual chat history before retrying.
+An accepted queue record is not a read receipt.
 
 Actual timing samples, physical bounds and the measured frontier are in
 [performance.md](docs/performance.md). Global optimality is not established.
