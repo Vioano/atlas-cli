@@ -1,0 +1,21 @@
+{
+  "release": "0.2.7",
+  "source_commit": "4a5436b9124f073f63b0261c60e01a77f37f276f",
+  "checked_at_utc": "2026-10-13T21:25:04.249157+00:00",
+  "source_test": "TestInvitationUsesRunningReleaseAndKeepsTwoLines",
+  "test_cases": [
+    "Windows public release installer",
+    "Windows existing verified HTTPS bootstrap",
+    "macOS/Linux versioned release link",
+    "original personal key retained",
+    "exactly two lines",
+    "development build does not emit vdev"
+  ],
+  "native_windows_release_ci": "https://github.com/Vioano/atlas-cli/actions/runs/38470120331",
+  "ci_conclusion": "success",
+  "public_installer_version_readback": "0.2.7",
+  "local_cli_version_readback": "0.2.7",
+  "independent_teammate_adoption": false,
+  "default_network_route_changed": false,
+  "legacy_general_receiver_changed": false
+}
