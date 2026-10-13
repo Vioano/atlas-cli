@@ -489,8 +489,14 @@ func run(args []string) error {
 func invitationText(key, platform string) string {
 	inv, _ := a.Unpack(key)
 	endpoint := strings.TrimRight(a.S(inv, "https_endpoint"), "/")
+	release := "https://github.com/Vioano/atlas-cli/releases"
+	installer := "https://raw.githubusercontent.com/Vioano/atlas-cli/main/scripts/install.ps1"
+	if version != "dev" {
+		release += "/tag/v" + version
+		installer = "https://raw.githubusercontent.com/Vioano/atlas-cli/v" + version + "/scripts/install.ps1"
+	}
 	if platform == "windows" {
-		install := "irm https://raw.githubusercontent.com/Vioano/atlas-cli/v0.2.5/scripts/install.ps1 | iex"
+		install := "irm " + installer + " | iex"
 		if endpoint != "" {
 			install = "$env:ATLAS_DOWNLOAD_BASE='" + endpoint + "/atlas'; irm " + endpoint + "/atlas/install.ps1 | iex"
 		}
@@ -500,7 +506,7 @@ func invitationText(key, platform string) string {
 		}
 		return install + "\n& \"$env:LOCALAPPDATA\\Atlas\\atlas.exe\" join " + key + " --agent current" + transport + "\n"
 	}
-	return "请当前 Agent 从 https://github.com/Vioano/atlas-cli/releases/tag/v0.2.5 安装本机 CLI，并执行下一行绑定本聊天；凭据只保留在本机。\natlas join " + key + " --agent current\n"
+	return "请当前 Agent 从 " + release + " 安装本机 CLI，并执行下一行绑定本聊天；凭据只保留在本机。\natlas join " + key + " --agent current\n"
 }
 func proxy(ctx context.Context, args []string) error {
 	f := flags("proxy")

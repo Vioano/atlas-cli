@@ -1,0 +1,264 @@
+{
+  "scope": "Captain Mac, same HTTPS hostname and certificate validation, existing public relay and private laptop; concurrent established HTTP/1.1 connections, rotated request order. No system routes or VPN settings changed.",
+  "health": [
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "cold_https",
+      "seconds": 1.761034750030376
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "cold_https",
+      "seconds": 0.9127219580113888
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "cold_https",
+      "seconds": 1.2419154579984024
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.7697645830921829
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.54226079210639
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "persistent_https",
+      "seconds": 0.5958552079973742
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.6722859169822186
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "persistent_https",
+      "seconds": 0.4813393340446055
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.7499182920437306
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "persistent_https",
+      "seconds": 0.48101091699209064
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.74552483309526
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.6671616670209914
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.8331757079577073
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.5408290419727564
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "persistent_https",
+      "seconds": 0.4876889589941129
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.539507000008598
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "persistent_https",
+      "seconds": 0.4728176669450477
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.7423069160431623
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "persistent_https",
+      "seconds": 0.4957264580298215
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.7280134169850498
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.5524758750107139
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.7562283750157803
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.5478626249823719
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "persistent_https",
+      "seconds": 0.48726958397310227
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.5534068749984726
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "persistent_https",
+      "seconds": 0.47659804194699973
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.784773499937728
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "persistent_https",
+      "seconds": 0.4884504999499768
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.7396395829273388
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.6005079169990495
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.8169589580502361
+    },
+    {
+      "route": "origin_current_tun",
+      "kind": "persistent_https",
+      "seconds": 0.5416055829264224
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "kind": "persistent_https",
+      "seconds": 0.48419795802328736
+    }
+  ],
+  "lfs": [
+    {
+      "route": "cloudflare_current_tun",
+      "sample": 1,
+      "bytes": 1048576,
+      "first_byte_seconds": 1.0416592080146074,
+      "seconds": 7.206706915982068,
+      "mbps": 1.164000159545391,
+      "payload_verified": true
+    },
+    {
+      "route": "origin_current_tun",
+      "sample": 1,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.5631582080386579,
+      "seconds": 1.8840256670955569,
+      "mbps": 4.452491357472857,
+      "payload_verified": true
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "sample": 1,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.5422266249079257,
+      "seconds": 2.0713049579644576,
+      "mbps": 4.049914508119448,
+      "payload_verified": true
+    },
+    {
+      "route": "origin_current_tun",
+      "sample": 2,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.6066171249840409,
+      "seconds": 1.6429141249973327,
+      "mbps": 5.105932119254023,
+      "payload_verified": true
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "sample": 2,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.5523434579372406,
+      "seconds": 1.1501649579731748,
+      "mbps": 7.29339556195699,
+      "payload_verified": true
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "sample": 2,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.7651331250090152,
+      "seconds": 1.4002794169355184,
+      "mbps": 5.990667218660037,
+      "payload_verified": true
+    },
+    {
+      "route": "origin_physical_wifi_socket",
+      "sample": 3,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.4882871250156313,
+      "seconds": 1.0265145000303164,
+      "mbps": 8.171933274934018,
+      "payload_verified": true
+    },
+    {
+      "route": "cloudflare_current_tun",
+      "sample": 3,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.7731250419747084,
+      "seconds": 1.1557766669429839,
+      "mbps": 7.257983518725787,
+      "payload_verified": true
+    },
+    {
+      "route": "origin_current_tun",
+      "sample": 3,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.6212573749944568,
+      "seconds": 0.9106139590730891,
+      "mbps": 9.212035370662159,
+      "payload_verified": true
+    }
+  ],
+  "route_proof": {
+    "origin_current_tun": {
+      "source_matches_physical_ipv4": false,
+      "bound_interface_matches": false
+    },
+    "origin_physical_wifi_socket": {
+      "source_matches_physical_ipv4": true,
+      "bound_interface_matches": true
+    }
+  },
+  "unavailable": {}
+}

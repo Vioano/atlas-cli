@@ -1,0 +1,204 @@
+{
+  "physical_interface_socket_verified": true,
+  "samples": [
+    {
+      "kind": "cold_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 1.419152542
+    },
+    {
+      "kind": "cold_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.91280175
+    },
+    {
+      "kind": "cold_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 1.00545325
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.539996625
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 0.498027959
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 0.572075167
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 0.493394291
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 0.575874875
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.540181375
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 0.554209083
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.545224334
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 0.490578209
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.55220825
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 0.4952165
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 0.565271959
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 0.497016459
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 0.578719292
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.563165292
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 0.576717375
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.554844291
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 0.491774959
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.540990667
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 0.498987125
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 0.557651166
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 0.502853625
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 0.559241209
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.555515709
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 0.570163334
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.610510917
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 0.503851458
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "seconds": 0.553936625
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "origin_physical_wifi_socket",
+      "seconds": 0.514937042
+    },
+    {
+      "kind": "persistent_https",
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "seconds": 0.576079917
+    }
+  ],
+  "scope": "Native Go on captain Mac, standard certificate verification, HTTP/2 allowed, concurrent connections and rotated order. No system route or VPN change."
+}
