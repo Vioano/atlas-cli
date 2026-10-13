@@ -24,7 +24,7 @@ func TestInvitationUsesRunningReleaseAndKeepsTwoLines(t *testing.T) {
 				if !strings.Contains(text, "/v9.8.7/") && !strings.Contains(text, "/tag/v9.8.7 ") {
 					t.Fatalf("%q invitation does not install the running published release", platform)
 				}
-			} else if !strings.Contains(text, endpoint+"/atlas/install.ps1") || !strings.Contains(text, "--https "+endpoint) {
+			} else if !strings.Contains(text, endpoint+"/atlas/v9.8.7/install.ps1") || !strings.Contains(text, "ATLAS_DOWNLOAD_BASE='"+endpoint+"/atlas/v9.8.7'") || !strings.Contains(text, "--https "+endpoint) {
 				t.Fatal("Windows invitation lost the existing verified HTTPS entry")
 			}
 		}

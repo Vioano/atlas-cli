@@ -1,0 +1,109 @@
+{
+  "samples": [
+    {
+      "body_mbps": 1.1880052763885012,
+      "bytes": 1048576,
+      "first_byte_seconds": 1.335130792,
+      "header_seconds": 1.3313295,
+      "lfs_oid_verified": true,
+      "mbps": 0.9990945269938181,
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "sample": 1,
+      "total_seconds": 8.396210542
+    },
+    {
+      "body_mbps": 5.48796569219503,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.567718584,
+      "header_seconds": 0.564843709,
+      "lfs_oid_verified": true,
+      "mbps": 4.0016961134113345,
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "sample": 1,
+      "total_seconds": 2.096263125
+    },
+    {
+      "body_mbps": 15.335455029285484,
+      "bytes": 8388608,
+      "first_byte_seconds": 0.572971667,
+      "header_seconds": 0.572969084,
+      "lfs_oid_verified": true,
+      "mbps": 13.560001647894415,
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "sample": 1,
+      "total_seconds": 4.949030667
+    },
+    {
+      "body_mbps": 23.308876381499775,
+      "bytes": 8388608,
+      "first_byte_seconds": 0.582371583,
+      "header_seconds": 0.582369458,
+      "lfs_oid_verified": true,
+      "mbps": 19.38731484809211,
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "sample": 1,
+      "total_seconds": 3.461483167
+    },
+    {
+      "body_mbps": 31.24530432186937,
+      "bytes": 8388608,
+      "first_byte_seconds": 0.578631334,
+      "header_seconds": 0.578629042,
+      "lfs_oid_verified": true,
+      "mbps": 24.614121911534372,
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "sample": 2,
+      "total_seconds": 2.726437459
+    },
+    {
+      "body_mbps": 32.41587836179594,
+      "bytes": 8388608,
+      "first_byte_seconds": 0.609032917,
+      "header_seconds": 0.607903708,
+      "lfs_oid_verified": true,
+      "mbps": 25.047356269813765,
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "sample": 2,
+      "total_seconds": 2.679279333
+    },
+    {
+      "body_mbps": 29.683905577904728,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.594182833,
+      "header_seconds": 0.594180875,
+      "lfs_oid_verified": true,
+      "mbps": 9.567512956895797,
+      "protocol": "HTTP/2.0",
+      "route": "cloudflare_current_tun",
+      "sample": 2,
+      "total_seconds": 0.876780417
+    },
+    {
+      "body_mbps": 29.162832206406183,
+      "bytes": 1048576,
+      "first_byte_seconds": 0.573958,
+      "header_seconds": 0.567212084,
+      "lfs_oid_verified": true,
+      "mbps": 9.736025672062084,
+      "protocol": "HTTP/2.0",
+      "route": "origin_current_tun",
+      "sample": 2,
+      "total_seconds": 0.861604959
+    }
+  ],
+  "scope": "Captain Mac, two concurrent native Go HTTP/2 verified-TLS routes, same private QA LFS objects, rotated route and size order. Existing production routes unchanged.",
+  "samples_per_route_and_size": 2,
+  "payload_note": "The 8 MiB object was generated with os.urandom and uploaded through Gitea LFS on the laptop loopback. Required LFS SHA-256 OIDs and exact lengths verified each download. No teammate repository, member or Git commit changed.",
+  "limitations": [
+    "Achieved throughput on one captain Mac/time, not a line-capacity upper bound.",
+    "No system route, proxy-provider selection or production service setting changed.",
+    "Two samples per case establish neither an SLA nor global route dominance.",
+    "Body rate excludes time to first byte; it is an average over the remaining payload, not a separately measured steady-state physical capacity."
+  ]
+}

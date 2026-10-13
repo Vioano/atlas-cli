@@ -103,6 +103,14 @@ systemd service or Windows login task and prepares the Git proxy before startup.
 Native Windows protocol tests and the published installer passed Windows CI.
 An independent teammate's Codex Desktop flow remains pending.
 
+From 0.2.10, HTTPS Windows invitations pin both the mirror installer and asset
+directory to the running release, retaining two lines. Older bootstrap URLs
+remain available. Both `atlas proxy` and the supervised Git proxy share the
+same token-as-Basic-password authentication and LFS URL conversion; the original
+anonymous loopback `proxy --listen` contract is retained. Inbound prompts ask
+for the real read receipt before further analysis and request replies only when
+the message needs one, avoiding automatic acknowledgment loops.
+
 Legacy clients continue with their original configuration and receiver. Importing
 credentials into this CLI does not transfer their event cursor or delivery
 journal. Do not use a new binding to take over an old chat's unread backlog or

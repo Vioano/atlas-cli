@@ -1,0 +1,18 @@
+{
+  "scope": "Candidate legacy proxy, isolated ATLAS_HOME, existing captain credentials and private QA LFS object; original profile and daemon untouched",
+  "batch_http": 200,
+  "download_http": 200,
+  "bytes": 8388608,
+  "lfs_oid_verified": true,
+  "local_auth_contract_preserved": true,
+  "action_url_stayed_on_loopback": true,
+  "seconds": 40.69384033291135,
+  "original_config_bytes_preserved": true,
+  "source_validation": {
+    "go_test_all": "passed",
+    "go_vet_all": "passed",
+    "cross_builds": 6,
+    "Windows_zips": 2
+  },
+  "timing_limitation": "This is one functional private LFS compatibility run through the existing captain route, not an A/B speedup or a full onboarding run."
+}

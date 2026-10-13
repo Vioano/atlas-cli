@@ -61,8 +61,27 @@ func GitProxy(ctx context.Context) error {
 	if e != nil || target.Host == "" {
 		return fmt.Errorf("Gitea URL missing")
 	}
+	rp := NewGitReverseProxy(target, g, c.Transport.HTTP.Transport, local)
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		u, p, ok := r.BasicAuth()
+		if !ok || u != S(local, "username") || subtle.ConstantTimeCompare([]byte(p), []byte(S(local, "password"))) != 1 {
+			w.Header().Set("WWW-Authenticate", `Basic realm="atlas-local"`)
+			http.Error(w, "local credential required", 401)
+			return
+		}
+		rp.ServeHTTP(w, r)
+	})
+	server := &http.Server{Addr: S(local, "address"), Handler: handler, ReadHeaderTimeout: 10 * time.Second}
+	go func() { <-ctx.Done(); server.Close() }()
+	return server.ListenAndServe()
+}
+
+// NewGitReverseProxy keeps both CLI proxy entrances on the same Git/LFS
+// authentication and action-URL rewriting path. An absent local username
+// preserves the original anonymous-loopback proxy contract.
+func NewGitReverseProxy(target *url.URL, g Object, transport http.RoundTripper, local Object) *httputil.ReverseProxy {
 	rp := httputil.NewSingleHostReverseProxy(target)
-	rp.Transport = c.Transport.HTTP.Transport
+	rp.Transport = transport
 	old := rp.Director
 	rp.Director = func(r *http.Request) {
 		old(r)
@@ -117,7 +136,9 @@ func GitProxy(ctx context.Context) error {
 				u.User = nil
 				action["href"] = u.String()
 				headers := O(Object(action), "header")
-				headers["Authorization"] = "Basic " + base64.StdEncoding.EncodeToString([]byte(S(local, "username")+":"+S(local, "password")))
+				if S(local, "username") != "" {
+					headers["Authorization"] = "Basic " + base64.StdEncoding.EncodeToString([]byte(S(local, "username")+":"+S(local, "password")))
+				}
 				action["header"] = headers
 			}
 		}
@@ -130,18 +151,7 @@ func GitProxy(ctx context.Context) error {
 		resp.Header.Set("Content-Length", fmt.Sprint(len(raw)))
 		return nil
 	}
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		u, p, ok := r.BasicAuth()
-		if !ok || u != S(local, "username") || subtle.ConstantTimeCompare([]byte(p), []byte(S(local, "password"))) != 1 {
-			w.Header().Set("WWW-Authenticate", `Basic realm="atlas-local"`)
-			http.Error(w, "local credential required", 401)
-			return
-		}
-		rp.ServeHTTP(w, r)
-	})
-	server := &http.Server{Addr: S(local, "address"), Handler: handler, ReadHeaderTimeout: 10 * time.Second}
-	go func() { <-ctx.Done(); server.Close() }()
-	return server.ListenAndServe()
+	return rp
 }
 func Credential(args []string, input io.Reader, output io.Writer) error {
 	if len(args) == 0 || args[0] != "get" {

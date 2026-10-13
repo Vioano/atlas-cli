@@ -9,7 +9,6 @@ import (
 	a "github.com/Vioano/atlas-cli/internal/atlas"
 	"io"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -518,7 +517,11 @@ func invitationText(key, platform string) string {
 	if platform == "windows" {
 		install := "irm " + installer + " | iex"
 		if endpoint != "" {
-			install = "$env:ATLAS_DOWNLOAD_BASE='" + endpoint + "/atlas'; irm " + endpoint + "/atlas/install.ps1 | iex"
+			mirror := endpoint + "/atlas"
+			if version != "dev" {
+				mirror += "/v" + version
+			}
+			install = "$env:ATLAS_DOWNLOAD_BASE='" + mirror + "'; irm " + mirror + "/install.ps1 | iex"
 		}
 		transport := ""
 		if endpoint != "" {
@@ -549,18 +552,7 @@ func proxy(ctx context.Context, args []string) error {
 	if e != nil {
 		return e
 	}
-	rp := httputil.NewSingleHostReverseProxy(target)
-	rp.Transport = c.Transport.HTTP.Transport
-	old := rp.Director
-	rp.Director = func(r *http.Request) {
-		old(r)
-		r.Host = target.Host
-		r.Header.Del("Authorization")
-		r.SetBasicAuth(a.S(g, "username"), a.S(g, "password"))
-		if tok := a.S(g, "token"); tok != "" {
-			r.Header.Set("Authorization", "token "+tok)
-		}
-	}
+	rp := a.NewGitReverseProxy(target, g, c.Transport.HTTP.Transport, a.Object{"address": *listen})
 	output(a.Object{"git_url": "http://" + *listen, "transport": c.Transport.Mode})
 	return http.ListenAndServe(*listen, rp)
 }

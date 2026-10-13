@@ -8,10 +8,66 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
+
+func TestLegacyProxyExistingTokenAndLFSActionStayOnLoopback(t *testing.T) {
+	var upstream *httptest.Server
+	upstream = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		u, p, ok := r.BasicAuth()
+		if !ok || u != "captain" || p != "existing-token" {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		switch r.URL.Path {
+		case "/atlas-git/captain/private.git/info/lfs/objects/batch":
+			// Gitea retains its pre-HTTPS ROOT_URL for old clients.
+			json.NewEncoder(w).Encode(Object{"objects": []Object{{"actions": Object{"download": Object{
+				"href":   "http://127.0.0.1:13000/captain/private.git/info/lfs/objects/fixture",
+				"header": Object{"Authorization": "Bearer existing-action"},
+			}}}}})
+		case "/atlas-git/captain/private.git/info/lfs/objects/fixture":
+			w.Write([]byte("private object"))
+		default:
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer upstream.Close()
+	target, _ := url.Parse(upstream.URL + "/atlas-git")
+	local := Object{}
+	proxy := httptest.NewServer(NewGitReverseProxy(target, Object{"username": "captain", "token": "existing-token"}, http.DefaultTransport, local))
+	defer proxy.Close()
+	local["address"] = strings.TrimPrefix(proxy.URL, "http://")
+	response, err := http.Post(proxy.URL+"/captain/private.git/info/lfs/objects/batch", "application/vnd.git-lfs+json", bytes.NewBufferString(`{"operation":"download"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var batch Object
+	err = json.NewDecoder(response.Body).Decode(&batch)
+	response.Body.Close()
+	if err != nil || response.StatusCode != 200 {
+		t.Fatalf("legacy private batch: HTTP %d, %v", response.StatusCode, err)
+	}
+	action := O(O(Items(batch, "objects")[0], "actions"), "download")
+	if !strings.HasPrefix(S(action, "href"), proxy.URL+"/") {
+		t.Fatal("LFS action escaped the original loopback proxy")
+	}
+	request, _ := http.NewRequest("GET", S(action, "href"), nil)
+	request.Header.Set("Authorization", S(O(action, "header"), "Authorization"))
+	response, err = http.DefaultClient.Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer response.Body.Close()
+	payload, _ := io.ReadAll(response.Body)
+	if response.StatusCode != 200 || string(payload) != "private object" {
+		t.Fatalf("legacy download: HTTP %d", response.StatusCode)
+	}
+}
 
 func TestGitProxyPrivateLFSWithExistingTokenOrPassword(t *testing.T) {
 	for _, credentials := range []struct{ name, token, password string }{
