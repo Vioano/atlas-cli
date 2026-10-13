@@ -104,6 +104,9 @@ func Bind(ctx context.Context, p Object, thread string, allow []string, settings
 			if err != nil {
 				return err
 			}
+			if err = validateEventPage(page, cursor); err != nil {
+				return err
+			}
 			cursor = N(page, "cursor")
 			if !B(page, "has_more") {
 				break
@@ -228,6 +231,9 @@ func receiveBinding(ctx context.Context, path string) {
 		poll, cancel := context.WithTimeout(ctx, 15*time.Second)
 		page, e := c.Call(poll, "GET", "/v1/events?channel="+url.QueryEscape(S(b, "channel"))+"&after="+fmt.Sprint(N(state, "cursor"))+"&wait=10", nil)
 		cancel()
+		if e == nil {
+			e = validateEventPage(page, N(state, "cursor"))
+		}
 		if e != nil {
 			c.Transport.Close()
 			state["last_error"] = e.Error()
@@ -286,6 +292,55 @@ func receiveBinding(ctx context.Context, path string) {
 		}
 	}
 }
+
+// A successful HTTP status is not proof of a complete events page. Retain the
+// last durable cursor until the whole page has valid, monotonic progress.
+func validateEventPage(page Object, after int) error {
+	cursor, ok := eventInteger(page["cursor"])
+	if !ok || cursor < after {
+		return fmt.Errorf("invalid events cursor; prior progress retained")
+	}
+	events, ok := page["events"].([]any)
+	if !ok {
+		return fmt.Errorf("invalid events list; prior progress retained")
+	}
+	hasMore, ok := page["has_more"].(bool)
+	if !ok || (hasMore && cursor == after) {
+		return fmt.Errorf("invalid events pagination; prior progress retained")
+	}
+	previous := after
+	for _, value := range events {
+		event, ok := value.(map[string]any)
+		if !ok {
+			return fmt.Errorf("invalid event; prior progress retained")
+		}
+		if S(Object(event), "kind") == "" {
+			return fmt.Errorf("invalid event kind; prior progress retained")
+		}
+		if _, ok := event["payload"].(map[string]any); !ok {
+			return fmt.Errorf("invalid event payload; prior progress retained")
+		}
+		id, ok := eventInteger(event["id"])
+		if !ok || id <= previous || id > cursor {
+			return fmt.Errorf("invalid event order; prior progress retained")
+		}
+		previous = id
+	}
+	return nil
+}
+
+func eventInteger(value any) (int, bool) {
+	switch number := value.(type) {
+	case int:
+		return number, number >= 0
+	case float64:
+		integer := int(number)
+		return integer, integer >= 0 && float64(integer) == number
+	default:
+		return 0, false
+	}
+}
+
 func eligible(b, m Object) bool {
 	p := O(m, "payload")
 	if S(p, "delivery") != "chat" && S(p, "delivery") != "both" {

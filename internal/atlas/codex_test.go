@@ -18,6 +18,17 @@ func TestMain(m *testing.M) {
 		if err := os.WriteFile(output, data, 0600); err != nil {
 			os.Exit(2)
 		}
+		if history := os.Getenv("ATLAS_TEST_QUEUE_HISTORY"); history != "" {
+			file, err := os.OpenFile(history, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+			if err != nil {
+				os.Exit(2)
+			}
+			_, err = file.Write(append(data, '\n'))
+			closeErr := file.Close()
+			if err != nil || closeErr != nil {
+				os.Exit(2)
+			}
+		}
 		fmt.Println("Queued fixture")
 		os.Exit(0)
 	}

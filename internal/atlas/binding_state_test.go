@@ -18,7 +18,7 @@ func TestLongPollDoesNotOverwriteConcurrentBindingUpdate(t *testing.T) {
 		if requests.Add(1) == 1 {
 			close(started)
 			<-release
-			json.NewEncoder(w).Encode(Object{"events": []any{}, "cursor": 8})
+			json.NewEncoder(w).Encode(Object{"events": []any{}, "cursor": 8, "has_more": false})
 			return
 		}
 		<-r.Context().Done()

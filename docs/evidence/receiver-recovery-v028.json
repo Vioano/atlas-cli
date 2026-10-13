@@ -1,0 +1,26 @@
+{
+  "release": "0.2.8",
+  "checked_at_utc": "2026-10-13T21:31:15.437199+00:00",
+  "fixture_scope": "Isolated loopback HTTP server with the actual receiveBinding worker and native queue helper; no production disconnection or actual Codex agent reading.",
+  "before_fix_empty_http_200_cursor_before": 137,
+  "before_fix_empty_http_200_cursor_after": 0,
+  "before_fix_regression_failed": true,
+  "after_fix_empty_response_preserves_cursor": true,
+  "failed_responses_before_recovery": [
+    "HTTP 503",
+    "HTTP 200 truncated JSON and declared Content-Length",
+    "HTTP 200 empty body"
+  ],
+  "linux_fixture_recovery_seconds": 7.039452074,
+  "after_recovery_cursor": 140,
+  "prior_credential_and_configuration_preserved": true,
+  "restart_window": "Queue acceptance journal saved; cursor simulates interruption before saving progress.",
+  "queue_submissions_after_worker_restart": 1,
+  "queue_acceptance_is_agent_read": false,
+  "whole_laptop_wifi_relocation_verified": false,
+  "tests": [
+    "TestEmptySuccessfulEventResponseDoesNotResetCursor",
+    "TestEventPageValidationRejectsRollbackAndMalformedProgress",
+    "TestReceiverRecoversPartialResponseAndDoesNotRequeueAfterRestart"
+  ]
+}

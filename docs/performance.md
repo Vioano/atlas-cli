@@ -33,6 +33,10 @@ A fresh post-fix message 742 automatically woke the idle chat; reply 743 automat
 
 Killing only the new HTTPS outbound tunnel process produced temporary request failures, followed by an authenticated HTTPS manifest response after 6.821 seconds, measured with one client's monotonic clock. Systemd restarted the process. The legacy tunnel, review tunnel, local Atlas and local Gitea remained active. This tests tunnel-process recovery, not moving the entire laptop to a different WiFi.
 
+An isolated receiver test then reproduced a cursor-loss bug in the existing CLI: an empty HTTP 200 events response changed a durable cursor from 137 to 0. Version 0.2.8 validates the complete events page and monotonic progress before accepting it. Empty, malformed, rolled-back or non-progressing pagination responses now retain the cursor and enter bounded retry. The same validation protects initial binding synchronization.
+
+A loopback fault fixture ran the actual receiver worker against three successive failures: HTTP 503, an incomplete JSON body shorter than its declared Content-Length, and empty HTTP 200. The worker recovered after 7.039 seconds in the Linux fixture, queued the available message once and advanced to cursor 140. A new worker then simulated restarting after admission had been journaled but before cursor persistence; it reused the durable journal and did not submit the message again. The original credential, sender authorization and binding cursor seed stayed intact. Admission used a native process fixture, not a real Codex agent, so this is transport/state recovery evidence rather than actual agent reading or whole-laptop relocation. See `evidence/receiver-recovery-v028.json` and `internal/atlas/receiver_recovery_test.go`.
+
 ## Latency samples
 
 Twenty sequential health requests per scenario, including the first cold request; no failures. Measurements were not simultaneous. They describe this network and time, not all teammates or a universal SLA.
