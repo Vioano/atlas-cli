@@ -11,7 +11,7 @@ Initial real private project creation plus invitation: 4.581 seconds. First real
 - Pooled pinned SSH and HTTP avoid repeated handshakes. A restricted LAN route uses hostname discovery instead of a stale WiFi address.
 - Certificate-verified HTTPS provides compatibility when a transparent VPN intercepts SSH. Windows invitation commands select HTTPS. Existing identities and SSH entrances are preserved.
 - Git LFS batch action URLs are translated by an authenticated loopback proxy. Private server credentials never appear in Git remote URLs. A 1 MiB payload was uploaded and independently downloaded with exact byte comparison.
-- Busy Desktop delivery uses its existing-turn steer operation. Idle delivery uses official Codex queue. Raw turn/start is disabled. Actual busy bidirectional messages 689/691 and read receipts were observed in the same existing Mac turn. Windows busy/idle behavior still requires live verification.
+- Busy Desktop delivery uses its existing-turn steer operation. Idle delivery uses official Codex queue. Raw turn/start is disabled. Actual busy bidirectional messages 689/691 and read receipts were observed in the same existing Mac turn. Version 0.2.2 also passed delivery between two distinct existing Mac chats: message 729 started the idle recipient through Codex queue, and reply 739 entered the busy sender through Desktop steer. Both were actually read and acknowledged. Windows busy/idle behavior still requires live verification.
 
 ## Latency samples
 
@@ -47,3 +47,5 @@ A rational stopping calculation is H > N × delta / 3600, where H is added engin
 **No global optimality claim is established.** The physical path, every capacity, alternative relay cost, independent Windows flow and relocation recovery need stronger evidence. The tested changes remove specific waste; they do not prove the network has reached its physical limit or that every further improvement costs too much.
 
 Version 0.2.1 prefixes newly generated operation identifiers with a valid letter. Version 0.2.0 used base64url identifiers whose first character could be rejected by the server. Existing credentials stay valid, and invalid pending enrollment identifiers are repaired without changing the pending credential.
+
+Version 0.2.2 falls back to the idle queue when Desktop explicitly rejects steering because the active turn already ended. Unknown delivery failures remain uncertain and are not blindly retried. Sending from an agent uses its current chat identity rather than another chat's last saved binding.
