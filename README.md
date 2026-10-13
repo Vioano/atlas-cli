@@ -70,6 +70,10 @@ wrapper or a separate CLI installation is unnecessary when Desktop is present.
 Native process tests preserve Unicode, quotes, newlines and paths with spaces.
 
 The background receiver reconnects with bounded backoff and stores event cursors.
+From 0.2.5, receiver progress is separate from binding configuration, so a long
+poll cannot overwrite a concurrent project grant or CLI-path update. An existing
+native receiver keeps its saved cursor when upgrading. Binding another teammate
+adds that local sender authorization and retains previously authorized senders.
 It does not spend model tokens while waiting. `ATLAS_HOME` selects a separate
 private client directory. `atlas status`, `atlas read`, and `atlas benchmark`
 provide actual state and timing. Git uses an authenticated loopback proxy;
