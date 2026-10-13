@@ -69,6 +69,11 @@ Windows it uses the app's existing LocalAppData executable, so an npm command
 wrapper or a separate CLI installation is unnecessary when Desktop is present.
 Native process tests preserve Unicode, quotes, newlines and paths with spaces.
 
+Existing receiver owners can use `atlas admit --thread UUID --request-id
+PERSISTED_UUID` with a wake reminder on stdin. It makes one busy-turn admission
+attempt and leaves the original receiver's cursor, journal and idle queue in
+place. See [the integration contract](docs/legacy-receiver-admission.md).
+
 The background receiver reconnects with bounded backoff and stores event cursors.
 From 0.2.5, receiver progress is separate from binding configuration, so a long
 poll cannot overwrite a concurrent project grant or CLI-path update. An existing

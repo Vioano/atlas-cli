@@ -58,6 +58,26 @@ func run(args []string) error {
 	case "help", "--help", "-h":
 		help()
 		return nil
+	case "admit":
+		f := flags("admit")
+		thread := f.String("thread", "", "existing Desktop target chat UUID")
+		source := f.String("source-thread", "", "optional original sending chat UUID")
+		requestID := f.String("request-id", "", "wake UUID already persisted by the original receiver")
+		parse(f, args)
+		if *thread == "" || *requestID == "" {
+			return fmt.Errorf("admit requires --thread UUID and --request-id PERSISTED_UUID; pass private wake text on stdin")
+		}
+		text, err := io.ReadAll(io.LimitReader(os.Stdin, 65537))
+		if err != nil {
+			return err
+		}
+		deadline, cancel := context.WithTimeout(ctx, 20*time.Second)
+		defer cancel()
+		result, err := a.BusyAdmit(deadline, *thread, *source, *requestID, string(text))
+		if result != nil {
+			output(result)
+		}
+		return err
 	case "setup":
 		f := flags("setup")
 		ap := f.String("atlas-profile", "", "existing captain Atlas identity")
@@ -554,6 +574,7 @@ func help() {
   atlas import EXISTING_IDENTITY.json
   atlas pack EXISTING_BUNDLE.json
   atlas bind --agent current --channel CHANNEL --allow ACTOR
+  atlas admit --thread UUID --request-id PERSISTED_UUID < PRIVATE_WAKE_TEXT
   atlas send --text TEXT --to ACTOR/SESSION
   atlas read --channel CHANNEL
   atlas status | doctor | agents | benchmark

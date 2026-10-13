@@ -1,0 +1,17 @@
+{
+  "release_candidate": "0.2.9",
+  "checked_at_utc": "2026-10-13T21:44:38.365799+00:00",
+  "actual_existing_busy_desktop_chat": true,
+  "original_persisted_request_id_reused": true,
+  "transport": "desktop-steer",
+  "desktop_acceptance_confirmed": true,
+  "captain_actually_read_marker_in_same_active_turn": true,
+  "actual_read_recorded_separately_from_admission_result": true,
+  "cli_returned_agent_read": false,
+  "elapsed_seconds": 1.0256595829268917,
+  "client_home_created": false,
+  "new_receiver_started": false,
+  "atlas_message_or_read_receipt_created": false,
+  "legacy_taptap_receiver_adopted": false,
+  "independent_windows_desktop_acceptance": false
+}

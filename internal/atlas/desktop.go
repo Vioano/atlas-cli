@@ -24,6 +24,7 @@ type Desktop struct {
 	conn   net.Conn
 	client string
 	owner  string
+	ctx    context.Context
 }
 
 func desktopPath() string {
@@ -38,7 +39,7 @@ func OpenDesktop(ctx context.Context, thread string) (*Desktop, error) {
 	if err != nil {
 		return nil, err
 	}
-	d := &Desktop{conn: conn}
+	d := &Desktop{conn: conn, ctx: ctx}
 	r, err := d.call("initialize", Object{"clientType": "atlas-cli"}, 0)
 	if err != nil {
 		conn.Close()
@@ -69,7 +70,13 @@ func (d *Desktop) call(method string, params Object, version int) (Object, error
 	if len(b) > 1<<20 {
 		return nil, fmt.Errorf("IPC request too large")
 	}
-	d.conn.SetDeadline(time.Now().Add(10 * time.Second))
+	deadline := time.Now().Add(10 * time.Second)
+	if d.ctx != nil {
+		if limit, ok := d.ctx.Deadline(); ok && limit.Before(deadline) {
+			deadline = limit
+		}
+	}
+	d.conn.SetDeadline(deadline)
 	header := make([]byte, 4)
 	binary.LittleEndian.PutUint32(header, uint32(len(b)))
 	if _, err = d.conn.Write(append(header, b...)); err != nil {
@@ -119,6 +126,14 @@ func (d *Desktop) Steer(thread, text string, messageID int) (Object, error) {
 	h := sha256.Sum256([]byte("atlas/" + thread + "/" + fmt.Sprint(messageID)))
 	id := hex.EncodeToString(h[:16])
 	clientID := id[:8] + "-" + id[8:12] + "-" + id[12:16] + "-" + id[16:20] + "-" + id[20:]
+	return d.SteerWithID(thread, text, clientID)
+}
+
+// Existing receiver owners can reuse their already-persisted wake identity.
+func (d *Desktop) SteerWithID(thread, text, clientID string) (Object, error) {
+	if !threadRE.MatchString(clientID) {
+		return nil, fmt.Errorf("persisted client message UUID required")
+	}
 	r, err := d.call("thread-follower-steer-turn", Object{
 		"conversationId": thread, "clientUserMessageId": clientID,
 		"input":          []Object{{"type": "text", "text": text, "text_elements": []any{}}},
@@ -135,6 +150,42 @@ func (d *Desktop) Steer(thread, text string, messageID int) (Object, error) {
 		return nil, fmt.Errorf("Desktop steer did not confirm a turn ID")
 	}
 	return Object{"transport": "desktop-steer", "result": r, "agent_read": false}, nil
+}
+
+// BusyAdmit performs one local admission attempt. It never polls Atlas, saves
+// an identity, starts a receiver, or creates an idle queue item. The original
+// receiver owns its ledger and retains its existing idle queue policy.
+func BusyAdmit(ctx context.Context, thread, sourceThread, requestID, text string) (Object, error) {
+	if !threadRE.MatchString(thread) || !threadRE.MatchString(requestID) || (sourceThread != "" && !threadRE.MatchString(sourceThread)) {
+		return nil, fmt.Errorf("target thread, persisted request ID and optional source thread must be UUIDs")
+	}
+	if len(text) == 0 || len(text) > 65536 {
+		return nil, fmt.Errorf("admission text must contain 1–65536 bytes")
+	}
+	result := Object{"request_id": requestID, "thread": thread, "admitted": nil, "agent_read": false, "safe_for_idle_queue": false}
+	desktop, err := OpenDesktop(ctx, thread)
+	if err != nil {
+		result["status"] = "unavailable"
+		result["admitted"] = false
+		result["safe_for_idle_queue"] = true
+		return result, fmt.Errorf("Desktop admission not submitted: %w", err)
+	}
+	defer desktop.Close()
+	accepted, err := desktop.SteerWithID(thread, DeliveryText(sourceThread, text), requestID)
+	if errors.Is(err, ErrDesktopIdle) {
+		result["status"] = "idle"
+		result["admitted"] = false
+		result["safe_for_idle_queue"] = true
+		return result, nil
+	}
+	if err != nil {
+		result["status"] = "uncertain"
+		return result, fmt.Errorf("Desktop admission outcome uncertain; reconcile the original receiver journal before retrying: %w", err)
+	}
+	result["status"] = "admitted"
+	result["admitted"] = true
+	result["runtime_result"] = accepted
+	return result, nil
 }
 
 func DeliveryText(sourceThread, text string) string {
