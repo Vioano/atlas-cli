@@ -24,9 +24,12 @@ jobs:
       - name: Run the published Windows installer
         shell: pwsh
         run: |
+          $installer = Get-Content -Raw ./scripts/install.ps1
+          $expectedVersion = [regex]::Match($installer, '/releases/download/v(?<version>\d+\.\d+\.\d+)/').Groups['version'].Value
+          if (-not $expectedVersion) { throw 'Installer must pin a published release version.' }
           & ./scripts/install.ps1
           $actual = & "$env:LOCALAPPDATA/Atlas/atlas.exe" version
-          if ($LASTEXITCODE -ne 0 -or $actual -ne 'atlas 0.2.5') {
+          if ($LASTEXITCODE -ne 0 -or $actual -ne "atlas $expectedVersion") {
             throw "Published Windows CLI did not report the expected version: $actual"
           }
   platforms:

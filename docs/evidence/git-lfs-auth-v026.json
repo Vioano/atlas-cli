@@ -1,0 +1,12 @@
+{
+  "release": "0.2.6",
+  "actual_proxy_batch_before_status": 401,
+  "actual_proxy_batch_after_status": 200,
+  "actual_proxy_download_status": 200,
+  "payload_bytes": 1048576,
+  "payload_verified": true,
+  "elapsed_seconds": 0.2651529579889029,
+  "credentials_rotated": false,
+  "prior_authorized_senders_retained": true,
+  "runtime_cursor_not_reset": true
+}
