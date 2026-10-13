@@ -1,5 +1,9 @@
 {
   "release": "0.2.6",
+  "source_commit": "0ee0271bce561a39b7b794539bf8729dfa06aba9",
+  "native_windows_ci": "https://github.com/Vioano/atlas-cli/actions/runs/38467008185",
+  "native_windows_ci_conclusion": "success",
+  "independent_teammate_windows_desktop_acceptance": false,
   "actual_proxy_batch_before_status": 401,
   "actual_proxy_batch_after_status": 200,
   "actual_proxy_download_status": 200,
