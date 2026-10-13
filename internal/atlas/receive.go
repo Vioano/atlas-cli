@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"runtime"
 	"strings"
@@ -18,6 +19,38 @@ var threadRE = regexp.MustCompile(`^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]
 
 func BindingPath(thread, channel string) string {
 	return filepath.Join(Home(), "bindings", thread+"-"+channel+".json")
+}
+func bindingStatePath(path string) string {
+	return filepath.Join(Home(), "binding-state", filepath.Base(path))
+}
+func loadBindingState(path string, b Object) (Object, error) {
+	state, err := Load(bindingStatePath(path))
+	if os.IsNotExist(err) {
+		return Object{"actor": b["actor"], "thread": b["thread"], "channel": b["channel"], "cursor": N(b, "cursor")}, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	for _, field := range []string{"actor", "thread", "channel"} {
+		if S(state, field) != S(b, field) {
+			return nil, fmt.Errorf("receiver state belongs to another binding")
+		}
+	}
+	return state, nil
+}
+func BindingStatus(b Object) (Object, error) {
+	state, err := loadBindingState(BindingPath(S(b, "thread"), S(b, "channel")), b)
+	if err != nil {
+		return nil, err
+	}
+	b = Clone(b)
+	for _, field := range []string{"cursor", "last_error", "last_error_at", "last_contact"} {
+		delete(b, field)
+		if value, ok := state[field]; ok {
+			b[field] = value
+		}
+	}
+	return b, nil
 }
 func Bind(ctx context.Context, p Object, thread string, allow []string, settings Object) error {
 	if thread == "current" {
@@ -82,6 +115,21 @@ func Bind(ctx context.Context, p Object, thread string, allow []string, settings
 	}
 	if S(b, "actor") != S(p, "actor") {
 		return fmt.Errorf("binding belongs to a different identity")
+	}
+	// A project grant adds a locally authorized sender; existing teammates keep
+	// their authorization. Revocation remains explicit at the server.
+	for _, previous := range Array(b["allow_actors"]) {
+		actor, ok := previous.(string)
+		if !ok || actor == "" {
+			continue
+		}
+		found := false
+		for _, current := range actors {
+			found = found || current == actor
+		}
+		if !found {
+			actors = append(actors, actor)
+		}
 	}
 	b["profile"] = p
 	b["allow_actors"] = actors
@@ -155,23 +203,36 @@ func receiveBinding(ctx context.Context, path string) {
 	if err != nil {
 		return
 	}
+	state, err := loadBindingState(path, b)
+	if err != nil {
+		return
+	}
+	statePath := bindingStatePath(path)
 	c := NewClient(O(b, "profile"), nil, false)
-	defer c.Transport.Close()
+	defer func() { c.Transport.Close() }()
 	backoff := time.Second
 	for {
-		// Reload policy and cursor after each page, allowing additive grants/binds.
+		// Only the receiver writes runtime progress; it never writes stale
+		// configuration over a concurrent bind or project grant.
 		latest, e := Load(path)
-		if e == nil {
-			b = latest
+		if e != nil {
+			state["last_error"] = e.Error()
+			Save(statePath, state)
+			return
 		}
+		if !reflect.DeepEqual(O(latest, "profile"), c.Profile) {
+			c.Transport.Close()
+			c = NewClient(O(latest, "profile"), nil, false)
+		}
+		b = latest
 		poll, cancel := context.WithTimeout(ctx, 15*time.Second)
-		page, e := c.Call(poll, "GET", "/v1/events?channel="+url.QueryEscape(S(b, "channel"))+"&after="+fmt.Sprint(N(b, "cursor"))+"&wait=10", nil)
+		page, e := c.Call(poll, "GET", "/v1/events?channel="+url.QueryEscape(S(b, "channel"))+"&after="+fmt.Sprint(N(state, "cursor"))+"&wait=10", nil)
 		cancel()
 		if e != nil {
 			c.Transport.Close()
-			b["last_error"] = e.Error()
-			b["last_error_at"] = time.Now().UTC().Format(time.RFC3339)
-			Save(path, b)
+			state["last_error"] = e.Error()
+			state["last_error_at"] = time.Now().UTC().Format(time.RFC3339)
+			Save(statePath, state)
 			select {
 			case <-ctx.Done():
 				return
@@ -183,22 +244,30 @@ func receiveBinding(ctx context.Context, path string) {
 			continue
 		}
 		backoff = time.Second
-		delete(b, "last_error")
+		delete(state, "last_error")
+		// Apply authorization changes made while this long poll was waiting.
+		if latest, err := Load(path); err == nil {
+			b = latest
+		} else {
+			state["last_error"] = err.Error()
+			Save(statePath, state)
+			return
+		}
 		blocked := false
 		for _, event := range Items(page, "events") {
 			if S(event, "kind") == "message.created" {
 				message := O(event, "payload")
 				if eligible(b, message) {
 					if e = deliver(ctx, b, message); e != nil {
-						b["last_error"] = e.Error()
-						Save(path, b)
+						state["last_error"] = e.Error()
+						Save(statePath, state)
 						blocked = true
 						break
 					}
 				}
 			}
-			b["cursor"] = N(event, "id")
-			if e = Save(path, b); e != nil {
+			state["cursor"] = N(event, "id")
+			if e = Save(statePath, state); e != nil {
 				return
 			}
 		}
@@ -210,9 +279,9 @@ func receiveBinding(ctx context.Context, path string) {
 			}
 			continue
 		}
-		b["cursor"] = N(page, "cursor")
-		b["last_contact"] = time.Now().UTC().Format(time.RFC3339)
-		if e = Save(path, b); e != nil {
+		state["cursor"] = N(page, "cursor")
+		state["last_contact"] = time.Now().UTC().Format(time.RFC3339)
+		if e = Save(statePath, state); e != nil {
 			return
 		}
 	}

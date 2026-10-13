@@ -312,6 +312,9 @@ func run(args []string) error {
 		}
 		r := a.Object{"actor": a.O(m, "actor"), "grants": m["grants"], "transport": c.Transport.Mode, "elapsed_ms": float64(time.Since(start).Microseconds()) / 1000, "credentials_expire": false}
 		if b, e := a.Load(filepath.Join(a.Home(), "binding.json")); e == nil {
+			if status, err := a.BindingStatus(b); err == nil {
+				b = status
+			}
 			delete(b, "profile")
 			delete(b, "settings")
 			r["agent_binding"] = b
