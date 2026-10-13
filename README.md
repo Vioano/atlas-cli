@@ -64,6 +64,11 @@ receipt does not claim the agent read the message: `atlas receipt --read ID
 isolated version-dependent adapter. Verify a real idle turn on the installed
 runtime. CLI queue support alone does not establish Desktop delivery.
 
+Version 0.2.4 selects Desktop's bundled native CLI before looking in PATH. On
+Windows it uses the app's existing LocalAppData executable, so an npm command
+wrapper or a separate CLI installation is unnecessary when Desktop is present.
+Native process tests preserve Unicode, quotes, newlines and paths with spaces.
+
 The background receiver reconnects with bounded backoff and stores event cursors.
 It does not spend model tokens while waiting. `ATLAS_HOME` selects a separate
 private client directory. `atlas status`, `atlas read`, and `atlas benchmark`
