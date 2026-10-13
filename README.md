@@ -84,7 +84,8 @@ PowerShell lines: installer and HTTPS join. Existing teammates can run
 https://YOUR_VERIFIED_GATEWAY --agent current` with their existing identity; this
 does not redeem their invitation again. Binding installs a user LaunchAgent,
 systemd service or Windows login task and prepares the Git proxy before startup.
-Windows runtime acceptance remains pending.
+Native Windows protocol tests and the published installer passed Windows CI.
+An independent teammate's Codex Desktop flow remains pending.
 
 Legacy clients continue with their original configuration and receiver. Importing
 credentials into this CLI does not transfer their event cursor or delivery
