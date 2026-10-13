@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -259,7 +260,13 @@ func deliver(ctx context.Context, b, m Object) error {
 		if S(r, "status") == "queued" {
 			return nil
 		}
-		return fmt.Errorf("message %d has an uncertain prior delivery; reconcile it with atlas delivery", id)
+		if strings.HasPrefix(S(r, "error"), "Desktop thread-follower-steer-turn:") && knownIdleRejection(S(r, "error")) {
+			if e = os.Remove(journal); e != nil {
+				return e
+			}
+		} else {
+			return fmt.Errorf("message %d has an uncertain prior delivery; reconcile it with atlas delivery", id)
+		}
 	} else if !os.IsNotExist(e) {
 		return e
 	}

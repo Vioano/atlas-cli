@@ -375,12 +375,26 @@ func run(args []string) error {
 		s := settings()
 		p, c := profile(s)
 		defer c.Transport.Close()
+		if *session == "" {
+			*session = os.Getenv("CODEX_THREAD_ID")
+		}
 		if b, e := a.Load(filepath.Join(a.Home(), "binding.json")); e == nil {
 			if *session == "" {
 				*session = a.S(b, "session")
 			}
-			if *channel == "" {
+			if *channel == "" && a.S(b, "session") == *session {
 				*channel = a.S(b, "channel")
+			}
+		}
+		if *channel == "" && *session != "" {
+			paths, _ := filepath.Glob(filepath.Join(a.Home(), "bindings", *session+"-*.json"))
+			if len(paths) == 1 {
+				if b, e := a.Load(paths[0]); e == nil {
+					*channel = a.S(b, "channel")
+				}
+			}
+			if len(paths) > 1 {
+				return fmt.Errorf("this chat is bound to multiple projects; provide --channel")
 			}
 		}
 		if *channel == "" {
@@ -473,7 +487,7 @@ func invitationText(key, platform string) string {
 	inv, _ := a.Unpack(key)
 	endpoint := strings.TrimRight(a.S(inv, "https_endpoint"), "/")
 	if platform == "windows" {
-		install := "irm https://raw.githubusercontent.com/Vioano/atlas-cli/v0.2.1/scripts/install.ps1 | iex"
+		install := "irm https://raw.githubusercontent.com/Vioano/atlas-cli/v0.2.2/scripts/install.ps1 | iex"
 		if endpoint != "" {
 			install = "$env:ATLAS_DOWNLOAD_BASE='" + endpoint + "/atlas'; irm " + endpoint + "/atlas/install.ps1 | iex"
 		}
@@ -483,7 +497,7 @@ func invitationText(key, platform string) string {
 		}
 		return install + "\n& \"$env:LOCALAPPDATA\\Atlas\\atlas.exe\" join " + key + " --agent current" + transport + "\n"
 	}
-	return "请当前 Agent 从 https://github.com/Vioano/atlas-cli/releases/tag/v0.2.1 安装本机 CLI，并执行下一行绑定本聊天；凭据只保留在本机。\natlas join " + key + " --agent current\n"
+	return "请当前 Agent 从 https://github.com/Vioano/atlas-cli/releases/tag/v0.2.2 安装本机 CLI，并执行下一行绑定本聊天；凭据只保留在本机。\natlas join " + key + " --agent current\n"
 }
 func proxy(ctx context.Context, args []string) error {
 	f := flags("proxy")

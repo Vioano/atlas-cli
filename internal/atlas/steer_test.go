@@ -10,7 +10,7 @@ import (
 )
 
 func TestSteerUsesExistingTurnAndClassifiesIdle(t *testing.T) {
-	for _, outcome := range []string{"accepted", "idle", "uncertain"} {
+	for _, outcome := range []string{"accepted", "idle", "idle-ended", "uncertain"} {
 		t.Run(outcome, func(t *testing.T) {
 			client, server := net.Pipe()
 			defer client.Close()
@@ -40,6 +40,9 @@ func TestSteerUsesExistingTurnAndClassifiesIdle(t *testing.T) {
 					if outcome == "idle" {
 						r["error"] = "Conversation target is not being streamed."
 					}
+					if outcome == "idle-ended" {
+						r["error"] = "Cannot steer conversation target because its active turn already ended"
+					}
 				}
 				b, _ = json.Marshal(r)
 				binary.LittleEndian.PutUint32(h[:], uint32(len(b)))
@@ -52,7 +55,7 @@ func TestSteerUsesExistingTurnAndClassifiesIdle(t *testing.T) {
 				if e != nil || S(r, "transport") != "desktop-steer" {
 					t.Fatal(e)
 				}
-			case "idle":
+			case "idle", "idle-ended":
 				if !errors.Is(e, ErrDesktopIdle) {
 					t.Fatal(e)
 				}

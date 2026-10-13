@@ -109,6 +109,10 @@ func (d *Desktop) Settings(thread string) (Object, error) {
 
 var ErrDesktopIdle = errors.New("Desktop has no active turn to steer")
 
+func knownIdleRejection(message string) bool {
+	return strings.Contains(message, "no active turn to steer") || strings.Contains(message, "is not being streamed") || strings.Contains(message, "because its active turn already ended")
+}
+
 // This is Desktop's existing steer operation. It updates the current turn;
 // it never submits turn/start or creates an optimistic new turn.
 func (d *Desktop) Steer(thread, text string, messageID int) (Object, error) {
@@ -122,7 +126,7 @@ func (d *Desktop) Steer(thread, text string, messageID int) (Object, error) {
 	}, 1)
 	if err != nil {
 		message := err.Error()
-		if strings.Contains(message, "no active turn to steer") || strings.Contains(message, "is not being streamed") {
+		if knownIdleRejection(message) {
 			return nil, ErrDesktopIdle
 		}
 		return nil, err
