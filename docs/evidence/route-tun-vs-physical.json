@@ -1,0 +1,179 @@
+{
+  "scope": "Same applications and relay; concurrent established SSH tunnels; alternate request order.",
+  "health": [
+    {
+      "route": "current_tun",
+      "kind": "fresh_http",
+      "seconds": 0.4817397240549326
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "fresh_http",
+      "seconds": 0.4513386581093073
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.24282651208341122
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.22626330610364676
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.23352510668337345
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.2423590226098895
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.3049747599288821
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.23150833509862423
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.22465802263468504
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.2363022705540061
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.2441644538193941
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.22800908237695694
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.27751542907208204
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.2745961667969823
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.250465027987957
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.2236279435455799
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.23174551501870155
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.24183521512895823
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.23899410665035248
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.225986965931952
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.22350697126239538
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.2495735725387931
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.24102931190282106
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.25704724807292223
+    },
+    {
+      "route": "physical_wifi",
+      "kind": "persistent_http",
+      "seconds": 0.23430027905851603
+    },
+    {
+      "route": "current_tun",
+      "kind": "persistent_http",
+      "seconds": 0.24034067522734404
+    }
+  ],
+  "lfs": [
+    {
+      "route": "current_tun",
+      "bytes": 1048576,
+      "seconds": 2.3514516800642014,
+      "mbps": 3.5674167031027264,
+      "payload_verified": true
+    },
+    {
+      "route": "physical_wifi",
+      "bytes": 1048576,
+      "seconds": 2.6279253056272864,
+      "mbps": 3.192102904156797,
+      "payload_verified": true
+    },
+    {
+      "route": "physical_wifi",
+      "bytes": 1048576,
+      "seconds": 2.7225561076775193,
+      "mbps": 3.081151560603067,
+      "payload_verified": true
+    },
+    {
+      "route": "current_tun",
+      "bytes": 1048576,
+      "seconds": 2.3511307844892144,
+      "mbps": 3.5679036042320518,
+      "payload_verified": true
+    },
+    {
+      "route": "current_tun",
+      "bytes": 1048576,
+      "seconds": 1.3770574443042278,
+      "mbps": 6.0916906805136435,
+      "payload_verified": true
+    },
+    {
+      "route": "physical_wifi",
+      "bytes": 1048576,
+      "seconds": 2.5030273012816906,
+      "mbps": 3.351384939231211,
+      "payload_verified": true
+    }
+  ]
+}

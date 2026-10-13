@@ -1,0 +1,47 @@
+{
+  "scope": "Actual deployed Handler and Store, isolated one-actor database; one persistent worker per phase; per-thread hardware cycles including kernel execution; excludes client CPU and SSH/TLS.",
+  "phases": [
+    {
+      "path": "/health",
+      "requests": 500,
+      "median_ms": 0.18390349578112364,
+      "min_ms": 0.17539190594106913,
+      "counters": [
+        {
+          "count": 222614397,
+          "time_enabled_ns": 53807325,
+          "time_running_ns": 53807325
+        },
+        {
+          "count": 180507877,
+          "time_enabled_ns": 53835918,
+          "time_running_ns": 53835918
+        }
+      ],
+      "counter_error": null,
+      "cycles_per_request": 445228.794,
+      "instructions_per_request": 361015.754
+    },
+    {
+      "path": "/v1/manifest",
+      "requests": 500,
+      "median_ms": 0.22277404787018895,
+      "min_ms": 0.20269304513931274,
+      "counters": [
+        {
+          "count": 310617005,
+          "time_enabled_ns": 74305425,
+          "time_running_ns": 74305425
+        },
+        {
+          "count": 256405114,
+          "time_enabled_ns": 74325693,
+          "time_running_ns": 74325693
+        }
+      ],
+      "counter_error": null,
+      "cycles_per_request": 621234.01,
+      "instructions_per_request": 512810.228
+    }
+  ]
+}
