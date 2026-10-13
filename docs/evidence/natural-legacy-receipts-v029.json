@@ -29,5 +29,17 @@
     }
   ],
   "runtime_observation": "The third recipient turn contains a contextCompaction item before the new-message read. This does not quantify the whole delay attribution.",
-  "conclusion": "Functional delivery and actual read verified; all three observations exceed 60 seconds. Receipt-first alone does not guarantee the deadline."
+  "conclusion": "Functional delivery and actual read verified; all three observations exceed 60 seconds. Receipt-first alone does not guarantee the deadline.",
+  "subsequent_inline_envelope_upgrade": {
+    "deployed_at": "2026-10-14T06:38:39.128392+08:00",
+    "adopted_by_original_service_owner": true,
+    "same_managed_singleton_service_restarted": true,
+    "new_receiver_or_binding_created": false,
+    "input_limit_utf8_bytes": 65536,
+    "whole_batch_or_legacy_file_fallback": true,
+    "old_eight_request_ids_text_and_outcomes_preserved": true,
+    "seven_new_isolated_checks_passed": true,
+    "new_inline_live_read_verified": false,
+    "note": "Above latency cases precede this further change. Observe natural traffic; do not infer a measured speedup."
+  }
 }

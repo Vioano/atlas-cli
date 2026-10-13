@@ -79,8 +79,13 @@ Receipt-first means an agent records its real read receipt before further
 analysis or coordination. It cannot acknowledge a merely queued or admitted
 message. Inline full source envelopes can remove another file-read/model
 round trip when they fit within the admission input limit; old journal and
-coalescing rules still apply. This is a proposed further integration change,
-not a measured improvement or a deadline guarantee. See
+coalescing rules still apply. The original owner has now deployed this further
+change in the same singleton service. Seven isolated checks passed; eight old
+request IDs, texts and outcomes stayed intact. Whole batches exceeding 64 KiB
+or failing source validation retain file-based reading, without truncation.
+The service PID changed during its managed restart. The three timing cases above
+precede that upgrade. Its live reading effect awaits the next natural message;
+it is not a measured improvement or a deadline guarantee. See
 [natural message evidence](evidence/natural-legacy-receipts-v029.json).
 
 Full onboarding, transport admission, actual agent reading and performing the
