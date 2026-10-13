@@ -46,16 +46,9 @@ func Bind(ctx context.Context, p Object, thread string, allow []string, settings
 	if len(actors) == 0 {
 		return fmt.Errorf("at least one locally authorized sender is required")
 	}
-	codex, err := exec.LookPath("codex")
+	codex, err := FindCodex()
 	if err != nil {
-		return fmt.Errorf("Codex CLI required for current agent binding")
-	}
-	// Use the CLI shipped with Desktop when available, avoiding mixed protocols.
-	if runtime.GOOS == "darwin" {
-		bundled := "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex"
-		if _, e := os.Stat(bundled); e == nil {
-			codex = bundled
-		}
+		return err
 	}
 	c := NewClient(p, nil, false)
 	defer c.Transport.Close()
