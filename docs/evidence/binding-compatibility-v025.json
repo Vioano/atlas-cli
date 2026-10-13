@@ -1,0 +1,23 @@
+{
+  "release": "0.2.5",
+  "source_commit": "bf7553a2b7d96879e6fb2f7552e5af50beb2af9f",
+  "checked_at_utc": "2026-10-13T20:43:59.328339+00:00",
+  "same_mac_distinct_existing_desktop_chats": true,
+  "outgoing_message": 820,
+  "reply_message": 821,
+  "recipient_actually_read_and_recorded_820": true,
+  "captain_actually_read_and_recorded_821": true,
+  "server_readonly_receipts_confirmed_both_reads": true,
+  "reply_delivery_transport": "desktop-steer",
+  "queue_result_is_not_read_evidence": true,
+  "old_allowed_senders_retained": true,
+  "previously_authorized_captain_sender_restored": true,
+  "native_codex_bundle_path_retained": true,
+  "configuration_cursor_unchanged": true,
+  "runtime_cursor_at_least_prior_cursor": true,
+  "runtime_cursor_ahead_of_configuration_seed": true,
+  "legacy_taptap_receiver_migration_test": false,
+  "independent_windows_desktop_acceptance": false,
+  "continuous_latency_measurement": false,
+  "native_windows_ci": "https://github.com/Vioano/atlas-cli/actions/runs/38464192518"
+}
