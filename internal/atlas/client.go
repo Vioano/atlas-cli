@@ -84,9 +84,20 @@ func (t *Transport) connect(ctx context.Context) (*ssh.Client, error) {
 		t.ssh = c
 		t.active = merged
 		t.Mode = "ssh:" + S(merged, "host")
+		go t.keepAlive(c)
 		return c, nil
 	}
 	return nil, fmt.Errorf("all configured routes failed: %s", strings.Join(errors, "; "))
+}
+func (t *Transport) keepAlive(client *ssh.Client) {
+	for {
+		time.Sleep(5*time.Second)
+		answer:=make(chan error,1)
+		go func(){_,_,err:=client.SendRequest("keepalive@openssh.com",true,nil);answer<-err}()
+		var err error
+		select{case err=<-answer:case <-time.After(4*time.Second):err=fmt.Errorf("SSH keepalive timed out")}
+		if err!=nil{client.Close();t.mu.Lock();if t.ssh==client{t.ssh=nil};t.mu.Unlock();return}
+	}
 }
 func (t *Transport) connectGateway(ctx context.Context, g Object, timeout time.Duration) (*ssh.Client, error) {
 	key := S(g, "private_key")
@@ -130,7 +141,11 @@ func (t *Transport) connectGateway(ctx context.Context, g Object, timeout time.D
 	if err != nil {
 		return nil, fmt.Errorf("SSH network connection: %w", err)
 	}
-	conn.SetDeadline(time.Now().Add(timeout + 4*time.Second))
+	deadline := time.Now().Add(timeout + 4*time.Second)
+	if limit, ok := ctx.Deadline(); ok && limit.Before(deadline) {
+		deadline = limit
+	}
+	conn.SetDeadline(deadline)
 	user := S(g, "user")
 	if user == "" {
 		user = "atlas-access"

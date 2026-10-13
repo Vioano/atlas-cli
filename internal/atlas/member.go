@@ -100,7 +100,10 @@ func Join(ctx context.Context, key string) (Object, error) {
 	}
 	c := NewClient(p, nil, false)
 	defer func() { c.Transport.Close() }()
-	if _, err = c.Call(ctx, "GET", "/health", nil); err != nil {
+	probe, cancel := context.WithTimeout(ctx, 5*time.Second)
+	_, err = c.Call(probe, "GET", "/health", nil)
+	cancel()
+	if err != nil {
 		if S(inv, "https_endpoint") == "" || B(inv, "prefer_https") {
 			return nil, fmt.Errorf("transport unavailable before enrollment: %w", err)
 		}
@@ -149,6 +152,23 @@ func OpenProfile(settings Object) (Object, *Client, error) {
 	p, err := Load(path)
 	if err != nil {
 		return nil, nil, err
+	}
+	if bundle := S(settings, "legacy_bundle"); bundle != "" {
+		inv, e := CompactBundle(bundle)
+		if e != nil {
+			return nil, nil, e
+		}
+		if S(inv, "actor") != S(p, "actor") {
+			return nil, nil, fmt.Errorf("bundle belongs to a different identity")
+		}
+		p["gitea"] = inv["gitea"]
+		p["project"] = inv["project"]
+		p["channel"] = inv["channel"]
+	}
+	if endpoint := S(settings, "https_endpoint"); endpoint != "" && S(settings, "mode") == "member" {
+		if err = HTTPSProfile(p, Object{"https_endpoint": endpoint, "gitea": p["gitea"]}); err != nil {
+			return nil, nil, err
+		}
 	}
 	if gp := S(settings, "gateway_profile"); gp != "" {
 		g, e := Load(gp)
@@ -210,6 +230,10 @@ func Benchmark(ctx context.Context, c *Client, count int) (Object, error) {
 	}
 	return Object{"samples_ms": ms, "failures": failures, "transport": c.Transport.Mode, "count": count, "measured_at": time.Now().UTC().Format(time.RFC3339)}, nil
 }
-func History(ctx context.Context, c *Client, channel string, after int) (Object, error) {
-	return c.Call(ctx, "GET", "/v1/messages?channel="+url.QueryEscape(channel)+"&after="+fmt.Sprint(after), nil)
+func History(ctx context.Context, c *Client, channel string, before int) (Object, error) {
+	path := "/v1/messages?channel=" + url.QueryEscape(channel)
+	if before > 0 {
+		path += "&before=" + fmt.Sprint(before)
+	}
+	return c.Call(ctx, "GET", path, nil)
 }

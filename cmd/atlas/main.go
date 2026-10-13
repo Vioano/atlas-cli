@@ -86,9 +86,14 @@ func run(args []string) error {
 		output(a.Object{"configured": true, "existing_credentials_preserved": true})
 		return nil
 	case "import":
-		if len(args) != 1 {
+		if len(args) < 1 {
 			return fmt.Errorf("atlas import /private/existing-identity.json")
 		}
+		f := flags("import")
+		bundle := f.String("bundle", "", "existing private bundle for Git access")
+		endpoint := f.String("https", "", "verified HTTPS endpoint")
+		agent := f.String("agent", "", "current or thread UUID")
+		parse(f, args[1:])
 		p, e := filepath.Abs(args[0])
 		if e != nil {
 			return e
@@ -97,8 +102,31 @@ func run(args []string) error {
 		if e != nil {
 			return e
 		}
+		if *bundle != "" {
+			path, e := filepath.Abs(*bundle)
+			if e != nil {
+				return e
+			}
+			s["legacy_bundle"] = path
+		}
+		if *endpoint != "" {
+			s["https_endpoint"] = *endpoint
+		}
+		profile, c, e := a.OpenProfile(s)
+		if e != nil {
+			return e
+		}
+		defer c.Transport.Close()
+		if _, e = c.Call(ctx, "GET", "/v1/manifest", nil); e != nil {
+			return e
+		}
 		if e = a.Save(filepath.Join(a.Home(), "config.json"), s); e != nil {
 			return e
+		}
+		if *agent != "" {
+			if e = a.Bind(ctx, profile, *agent, []string{strings.Split(a.S(a.O(profile, "gitea"), "repository"), "/")[0]}, s); e != nil {
+				return e
+			}
 		}
 		output(s)
 		return nil
@@ -116,7 +144,7 @@ func run(args []string) error {
 		if e != nil {
 			return e
 		}
-		fmt.Println("使用 atlas CLI 加入此项目，并绑定当前 Agent 聊天；凭据只留在本机。\natlas join " + key + " --agent current")
+		fmt.Print(invitationText(key, ""))
 		return nil
 	case "project":
 		if len(args) < 2 {
@@ -134,6 +162,7 @@ func run(args []string) error {
 		days := f.Int("days", 7, "first enrollment lifetime")
 		agent := f.String("agent", "", "current or thread UUID")
 		out := f.String("out", "", "private two-line invitation file")
+		platform := f.String("platform", "", "windows, macos or linux invitation commands")
 		parse(f, args[2:])
 		start := time.Now()
 		s := settings()
@@ -170,13 +199,20 @@ func run(args []string) error {
 		if *agent != "" {
 			p := admin.Atlas.Profile
 			p["channel"] = project + "-general"
-			if e = a.Bind(ctx, p, *agent, []string{*invite}, s); e != nil {
+			allowed := *invite
+			if allowed == "" {
+				allowed = *member
+			}
+			if allowed == "" {
+				return fmt.Errorf("--agent needs --invite or --member for a locally authorized teammate")
+			}
+			if e = a.Bind(ctx, p, *agent, []string{allowed}, s); e != nil {
 				return e
 			}
 		}
 		r["elapsed_ms"] = float64(time.Since(start).Microseconds()) / 1000
 		if key := a.S(r, "key"); key != "" {
-			text := "使用 atlas CLI 加入此项目，并绑定当前 Agent 聊天；凭据只留在本机。\natlas join " + key + " --agent current\n"
+			text := invitationText(key, *platform)
 			delete(r, "key")
 			if *out != "" {
 				if e = a.PrivateDir(filepath.Dir(*out)); e != nil {
@@ -281,6 +317,9 @@ func run(args []string) error {
 			r["agent_binding"] = b
 		}
 		r["legacy_identity"] = a.S(s, "profile")
+		if proxy, e := a.Load(filepath.Join(a.Home(), "git-proxy-status.json")); e == nil {
+			r["git_proxy"] = proxy
+		}
 		r["channel"] = p["channel"]
 		output(r)
 		return nil
@@ -312,6 +351,20 @@ func run(args []string) error {
 		return a.Bind(ctx, p, *agent, strings.Split(*allow, ","), s)
 	case "receive":
 		return a.Receive(ctx)
+	case "service":
+		if len(args) == 0 || args[0] == "install" {
+			return a.InstallReceiver()
+		}
+		if args[0] == "run" {
+			f := flags("service run")
+			home := f.String("home", "", "private client directory")
+			parse(f, args[1:])
+			if *home != "" {
+				os.Setenv("ATLAS_HOME", *home)
+			}
+			return a.Receive(ctx)
+		}
+		return fmt.Errorf("atlas service install or atlas service run")
 	case "send":
 		f := flags("send")
 		channel := f.String("channel", "", "channel")
@@ -356,14 +409,14 @@ func run(args []string) error {
 	case "read":
 		f := flags("read")
 		channel := f.String("channel", "", "channel")
-		after := f.Int("after", 0, "message ID")
+		before := f.Int("before", 0, "read messages before this ID")
 		parse(f, args)
 		p, c := profile(settings())
 		defer c.Transport.Close()
 		if *channel == "" {
 			*channel = a.S(p, "channel")
 		}
-		r, e := a.History(ctx, c, *channel, *after)
+		r, e := a.History(ctx, c, *channel, *before)
 		if e == nil {
 			output(r)
 		}
@@ -403,8 +456,9 @@ func run(args []string) error {
 		root := f.String("static-root", "/var/www/sub", "preserved static files")
 		ap := f.String("atlas-upstream", "http://127.0.0.1:23001", "Atlas loopback upstream")
 		gp := f.String("git-upstream", "http://127.0.0.1:23000", "Gitea loopback upstream")
+		routes := f.String("routes", "", "additional PREFIX=http://127.0.0.1:PORT routes, comma separated")
 		parse(f, args)
-		return a.HTTPSGateway(ctx, *listen, *cert, *key, *root, *ap, *gp)
+		return a.HTTPSGateway(ctx, *listen, *cert, *key, *root, *ap, *gp, *routes)
 	case "proxy":
 		return proxy(ctx, args)
 	case "clone":
@@ -414,6 +468,22 @@ func run(args []string) error {
 	default:
 		return fmt.Errorf("unknown command %q; run atlas help", command)
 	}
+}
+func invitationText(key, platform string) string {
+	inv, _ := a.Unpack(key)
+	endpoint := strings.TrimRight(a.S(inv, "https_endpoint"), "/")
+	if platform == "windows" {
+		install := "irm https://raw.githubusercontent.com/Vioano/atlas-cli/v0.2.0/scripts/install.ps1 | iex"
+		if endpoint != "" {
+			install = "$env:ATLAS_DOWNLOAD_BASE='" + endpoint + "/atlas'; irm " + endpoint + "/atlas/install.ps1 | iex"
+		}
+		transport := ""
+		if endpoint != "" {
+			transport = " --https " + endpoint
+		}
+		return install + "\n& \"$env:LOCALAPPDATA\\Atlas\\atlas.exe\" join " + key + " --agent current" + transport + "\n"
+	}
+	return "请当前 Agent 从 https://github.com/Vioano/atlas-cli/releases/tag/v0.2.0 安装本机 CLI，并执行下一行绑定本聊天；凭据只保留在本机。\natlas join " + key + " --agent current\n"
 }
 func proxy(ctx context.Context, args []string) error {
 	f := flags("proxy")

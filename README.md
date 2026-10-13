@@ -50,8 +50,9 @@ routes, and a certificate-verified HTTPS fallback. A transparent VPN can interce
 native SSH despite an empty application proxy setting; HTTPS compatibility does
 not require changing the teammate's entire VPN.
 
-`--agent current` uses `CODEX_THREAD_ID`. Desktop owner discovery binds the actual
-existing chat; CLI uses `codex queue`. Each delivery has a durable journal. A queue
+`--agent current` uses `CODEX_THREAD_ID`. Desktop owner discovery binds the actual existing chat. Busy delivery uses the
+existing-turn steer operation; idle delivery uses official `codex queue`. Raw
+Desktop turn/start is disabled. Each delivery has a durable journal. A queue
 receipt does not claim the agent read the message: `atlas receipt --read ID
 --channel CHANNEL --session THREAD` records actual reading. Desktop IPC is an
 isolated version-dependent adapter. Verify a real idle turn on the installed
@@ -70,3 +71,14 @@ directory-listing denial, and no-store headers.
 
 MIT licensed. This project publishes software only, never private member keys,
 invitation bundles, server passwords, or private diagnostics.
+
+Use `--platform windows` when creating an invitation to emit two executable
+PowerShell lines: installer and HTTPS join. Existing teammates can run
+`atlas import identity.json --bundle ORIGINAL.bundle.json --https
+https://YOUR_VERIFIED_GATEWAY --agent current` with their existing identity; this
+does not redeem their invitation again. Binding installs a user LaunchAgent,
+systemd service or Windows login task and prepares the Git proxy before startup.
+Windows runtime acceptance remains pending.
+
+Actual timing samples, physical bounds and the measured frontier are in
+[performance.md](docs/performance.md). Global optimality is not established.

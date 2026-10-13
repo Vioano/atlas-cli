@@ -222,6 +222,22 @@ func CloneRepo(ctx context.Context, args []string) error {
 			return e
 		}
 	}
+	if _, err := exec.LookPath("git-lfs"); err == nil {
+		for _, action := range []string{"install", "pull"} {
+			gitArgs := []string{"-C", directory, "lfs", action}
+			if action == "install" {
+				gitArgs = append(gitArgs, "--local")
+			}
+			cmd := exec.CommandContext(ctx, "git", gitArgs...)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if err = cmd.Run(); err != nil {
+				return fmt.Errorf("repository cloned; LFS %s failed: %w", action, err)
+			}
+		}
+	} else if attrs, err := os.ReadFile(filepath.Join(directory, ".gitattributes")); err == nil && bytes.Contains(attrs, []byte("filter=lfs")) {
+		return fmt.Errorf("repository cloned; install Git LFS to download its assets")
+	}
 	return nil
 }
 func shellQuote(s string) string { return "'" + strings.ReplaceAll(s, "'", `'"'"'`) + "'" }

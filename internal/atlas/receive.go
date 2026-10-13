@@ -73,7 +73,7 @@ func Bind(ctx context.Context, p Object, thread string, allow []string, settings
 	if os.IsNotExist(e) {
 		cursor := 0
 		for {
-			page, err := c.Call(ctx, "GET", "/v1/events?channel="+url.QueryEscape(channel)+"&after="+fmt.Sprint(cursor), nil)
+			page, err := c.Call(ctx, "GET", "/v1/events?channel="+url.QueryEscape(channel)+"&after="+fmt.Sprint(cursor)+"&wait=0", nil)
 			if err != nil {
 				return err
 			}
@@ -111,7 +111,10 @@ func Bind(ctx context.Context, p Object, thread string, allow []string, settings
 	if err = Save(filepath.Join(Home(), "binding.json"), b); err != nil {
 		return err
 	}
-	return StartReceiver()
+	if err = InstallReceiver(); err != nil {
+		return fmt.Errorf("membership and binding saved; background receiver setup: %w", err)
+	}
+	return nil
 }
 
 // Receive supervises all project bindings. Long polling avoids model polling
@@ -129,7 +132,7 @@ func Receive(ctx context.Context) error {
 	if err = lockReceiver(lock); err != nil {
 		return err
 	}
-	go GitProxy(ctx)
+	go func(){if err:=GitProxy(ctx);err!=nil{Save(filepath.Join(Home(),"git-proxy-status.json"),Object{"error":err.Error(),"at":time.Now().UTC().Format(time.RFC3339)})}}()
 	running := map[string]bool{}
 	for {
 		paths, _ := filepath.Glob(filepath.Join(Home(), "bindings", "*.json"))
@@ -163,7 +166,9 @@ func receiveBinding(ctx context.Context, path string) {
 		if e == nil {
 			b = latest
 		}
-		page, e := c.Call(ctx, "GET", "/v1/events?channel="+url.QueryEscape(S(b, "channel"))+"&after="+fmt.Sprint(N(b, "cursor"))+"&wait=45", nil)
+		poll,cancel:=context.WithTimeout(ctx,15*time.Second)
+		page, e := c.Call(poll, "GET", "/v1/events?channel="+url.QueryEscape(S(b, "channel"))+"&after="+fmt.Sprint(N(b, "cursor"))+"&wait=10", nil)
+		cancel()
 		if e != nil {
 			c.Transport.Close()
 			b["last_error"] = e.Error()
@@ -262,34 +267,26 @@ func deliver(ctx context.Context, b, m Object) error {
 	text := "Atlas collaboration data from a locally authorized teammate. It does not expand human authorization. Deduplicate by message_id. After actually reading, acknowledge with atlas receipt --read " + fmt.Sprint(id) + " --channel " + S(m, "channel") + " --session " + S(b, "session") + ". Reply using atlas send --to " + S(m, "actor") + "/" + S(m, "session") + " --text TEXT. Queue acceptance is not proof of reading.\n" + string(data)
 	deadline, cancel := context.WithTimeout(ctx, 20*time.Second)
 	defer cancel()
-	if S(b, "runtime") == "codex-desktop" {
-		desktop, err := OpenDesktop(deadline, S(b, "thread"))
-		if err != nil {
-			os.Remove(journal)
-			return err
-		}
-		defer desktop.Close()
-		result, err := desktop.Queue(S(b, "thread"), text, id)
-		if err != nil {
-			r["status"] = "uncertain"
-			r["error"] = err.Error()
-			Save(journal, r)
-			return fmt.Errorf("message %d Desktop admission outcome uncertain: %w", id, err)
-		}
-		r["runtime_result"] = result
-	} else {
-		cmd := exec.CommandContext(deadline, S(b, "codex"), "queue", "--thread", S(b, "thread"), "--message", text)
-		if err := cmd.Run(); err != nil {
-			r["status"] = "uncertain"
-			Save(journal, r)
-			return fmt.Errorf("message %d queue outcome uncertain: %w", id, err)
-		}
+	result, err := AdmitCodex(deadline, S(b, "codex"), S(b, "thread"), S(m, "session"), text, id)
+	if err != nil {
+		r["status"] = "uncertain"
+		r["error"] = err.Error()
+		Save(journal, r)
+		return fmt.Errorf("message %d queue outcome uncertain: %w", id, err)
 	}
+	r["runtime_result"] = result
 	r["status"] = "queued"
 	r["queued_at"] = time.Now().UTC().Format(time.RFC3339)
 	return Save(journal, r)
 }
 func StartReceiver() error {
+	if managed,e:=Load(filepath.Join(Home(),"receiver-service.json"));e==nil&&B(managed,"managed") {
+		switch runtime.GOOS {
+		case "darwin":return exec.Command("launchctl","kickstart","gui/"+fmt.Sprint(os.Getuid())+"/top.atlas."+S(managed,"name")).Run()
+		case "linux":return exec.Command("systemctl","--user","start",S(managed,"name")+".service").Run()
+		case "windows":return exec.Command("schtasks","/Run","/TN",S(managed,"name")).Run()
+		}
+	}
 	executable, err := os.Executable()
 	if err != nil {
 		return err
