@@ -1,0 +1,40 @@
+{
+  "schema": "atlas-ssh-blackhole-recovery/1",
+  "measured_at": "2026-10-13T22:29:03.597151+00:00",
+  "scope": "isolated SSH transport with existing restricted key, no remote forwards; no production network/unit changes",
+  "settings": {
+    "ServerAliveInterval": 5,
+    "ServerAliveCountMax": 2,
+    "ConnectTimeout": 8,
+    "RestartSec": 2,
+    "StartLimitIntervalSec": "systemd default"
+  },
+  "baseline_public_key_authentication": true,
+  "fault": {
+    "type": "bidirectional traffic discarded without TCP FIN or RST",
+    "duration_seconds": 30.03537617402617
+  },
+  "authenticated_connection_to_first_timeout_seconds": 14.455155,
+  "restarts_observed_before_network_restoration": 2,
+  "restoration_to_authenticated_again_upper_bound_seconds": 9.06973560899496,
+  "production_three_tunnel_pids_and_active_states_unchanged": true,
+  "test_unit_removed": true,
+  "post_test_health": {
+    "original_atlas_http": 200,
+    "original_gitea_http": 200,
+    "authenticated_public_https_manifest_with_atlas_user_agent": 200
+  },
+  "deployment_readback": {
+    "linger_enabled": true,
+    "three_tunnels_enabled_at_boot": true,
+    "network_manager_active": true,
+    "mdns_active": true,
+    "current_wifi_profile_autoconnect": true
+  },
+  "limitations": [
+    "One isolated SSH connection with existing host-key pin and restricted key; no remote forwarding ports were opened.",
+    "Does not simulate changing the whole laptop WiFi, obtaining a new lease, captive portals, DNS outage, suspend or reboot.",
+    "Authentication recovery is separate from production forwarding readiness; the earlier live new-HTTPS tunnel kill probe covers that other fault.",
+    "Legacy tunnel settings remain unchanged: interval 20, count 3, restart delay 15 seconds."
+  ]
+}

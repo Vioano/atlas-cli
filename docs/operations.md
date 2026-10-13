@@ -1,0 +1,88 @@
+# Moving the private server and recovering connections
+
+Public access uses a verified HTTPS hostname and outbound restricted SSH tunnels.
+The laptop's LAN address is not a public endpoint. A new WiFi lease therefore
+does not require replacing invitations, teammate identities, repository grants
+or public URLs. The optional LAN gateway uses discovered hostnames and listens
+on all IPv4 interfaces. Public HTTPS remains the fallback when LAN discovery is
+unavailable. Existing SSH clients retain their original paths and permissions.
+
+The laptop still needs working Internet access. Join the destination WiFi and
+complete any captive portal first. An unknown WiFi password, a suspended laptop,
+blocked outbound access or a disconnected network cannot be repaired by a
+teammate's invitation key. Keep credentials and WiFi configuration private.
+
+## Actual deployment checks
+
+The deployed laptop has NetworkManager and mDNS active. The current WiFi profile
+has autoconnect enabled. The user has lingering enabled, and the three existing
+tunnel services are enabled at boot. These settings support recovery without
+keeping a model running. They do not constitute a reboot or whole-WiFi-move test.
+
+The new web and review tunnels use `ServerAliveInterval=5`,
+`ServerAliveCountMax=2`, `ConnectTimeout=8` and `RestartSec=2`. They retain normal
+host-key verification and restricted forwarding accounts. The old tunnel still
+uses 20 seconds, three unanswered checks and a 15-second restart delay. Its
+first recovery after a silent outage can take longer than one minute. The old
+service was not changed or restarted by the isolated test.
+
+Do not interpret the keepalive settings as a guaranteed ten-second detection
+deadline. An isolated connection authenticated with the existing pinned host
+key and restricted key was deliberately blackholed, without a TCP FIN or RST.
+The first timeout was 14.455 seconds after initial authentication. Traffic was
+dropped for 30.035 seconds. After restoration, systemd restarted the connection
+and authentication was observed within **9.070 seconds**. It made two restarts
+before restoration; the default start limiter did not stop this case. No remote
+forwarding ports were opened. All three production tunnel PIDs and active states
+remained unchanged, and original Atlas/Gitea health and authenticated public
+HTTPS were read back successfully. The temporary test unit was removed.
+See [sanitized evidence](evidence/ssh-blackhole-recovery.json).
+
+The separate live test that killed only the new web tunnel recovered an
+authenticated public manifest in **6.821 seconds**. That test covers forwarding
+readiness after a process failure; the blackhole test covers a silent transport
+failure. Neither proves a whole-laptop WiFi move, DHCP/DNS failure, captive
+portal, suspend or reboot recovery time.
+
+## Compatibility during recovery
+
+Keep the server's existing credentials, host-key pins and local service ports.
+Do not redeem an existing teammate's invitation on another machine. Do not run
+two receivers for the same existing chat. Each original receiver retains its
+cursor, delivery journal, source-envelope storage and queue ownership.
+
+The CLI saves operation IDs before sending messages and enrollment requests.
+Reconnect retries preserve those identities and saved progress. A confirmed
+Desktop admission is not a read receipt. An uncertain outcome requires
+reconciliation with actual chat history before another submission. Credential
+revocation remains explicit; a changed WiFi address does not expire a teammate.
+
+For an already enrolled teammate receiving another project grant, use the
+existing-member access key. Their existing identity is reused; no fresh
+enrollment or replacement of old project permissions is necessary.
+
+## What the one-minute target currently establishes
+
+One complete fresh Mac project/join/private-clone/duplex-read run was observed
+within 59.686 seconds. Independent Windows Desktop acceptance is still pending.
+Native Windows installer and protocol CI do not replace that acceptance.
+
+The original TapTap receiver actually adopted single busy admission. Three
+subsequent natural business messages had admission times of 53.771, 57.816 and
+54.750 ms, while their server send-to-first-read-receipt times were 65.155,
+61.114 and 234.908 seconds. All were actually read. The last recipient turn
+contained context compaction before reading the message. The trace does not
+quantify each contribution to that delay. These observations fail a strict
+60-second read-receipt target even after a receipt-first policy.
+
+Receipt-first means an agent records its real read receipt before further
+analysis or coordination. It cannot acknowledge a merely queued or admitted
+message. Inline full source envelopes can remove another file-read/model
+round trip when they fit within the admission input limit; old journal and
+coalescing rules still apply. This is a proposed further integration change,
+not a measured improvement or a deadline guarantee. See
+[natural message evidence](evidence/natural-legacy-receipts-v029.json).
+
+Full onboarding, transport admission, actual agent reading and performing the
+requested task remain distinct measurements. A CLI cannot guarantee the model
+runtime's scheduling, context-compaction or generation latency.

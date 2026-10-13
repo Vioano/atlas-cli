@@ -116,3 +116,5 @@ An accepted queue record is not a read receipt.
 
 Actual timing samples, physical bounds and the measured frontier are in
 [performance.md](docs/performance.md). Global optimality is not established.
+Moving the laptop, reconnection evidence and the remaining one-minute limits
+are described in [operations.md](docs/operations.md).

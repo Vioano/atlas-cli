@@ -1,0 +1,33 @@
+{
+  "schema": "atlas-natural-legacy-receipts/1",
+  "scope": "Three natural business messages after receipt-first policy; no added test markers or reply loop",
+  "measurement_clock": "send and first matching read-receipt event use the same server clock",
+  "cases": [
+    {
+      "sample": 1,
+      "server_send_to_first_read_receipt_seconds": 65.15510296821594,
+      "actual_read_recorded": true,
+      "one_confirmed_busy_admission": true,
+      "local_busy_admission_seconds": 0.053771,
+      "local_observation_to_read_checkpoint_seconds": 65.153147
+    },
+    {
+      "sample": 2,
+      "server_send_to_first_read_receipt_seconds": 61.1138801574707,
+      "actual_read_recorded": true,
+      "one_confirmed_busy_admission": true,
+      "local_busy_admission_seconds": 0.057816,
+      "local_observation_to_read_checkpoint_seconds": 61.149615
+    },
+    {
+      "sample": 3,
+      "server_send_to_first_read_receipt_seconds": 234.9082465171814,
+      "actual_read_recorded": true,
+      "one_confirmed_busy_admission": true,
+      "local_busy_admission_seconds": 0.05475,
+      "local_observation_to_read_checkpoint_seconds": 234.944665
+    }
+  ],
+  "runtime_observation": "The third recipient turn contains a contextCompaction item before the new-message read. This does not quantify the whole delay attribution.",
+  "conclusion": "Functional delivery and actual read verified; all three observations exceed 60 seconds. Receipt-first alone does not guarantee the deadline."
+}
