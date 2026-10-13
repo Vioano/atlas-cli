@@ -5,9 +5,9 @@ $atlasDirectory = Join-Path $env:LOCALAPPDATA 'Atlas'
 New-Item -ItemType Directory -Force -Path $atlasDirectory | Out-Null
 $atlasTemporary = Join-Path $atlasDirectory 'atlas-download.zip'
 $atlasExecutable = Join-Path $atlasDirectory 'atlas.exe'
-$atlasURL = 'https://github.com/Vioano/atlas-cli/releases/download/v0.2.5/atlas-windows-amd64.zip'
+$atlasURL = 'https://github.com/Vioano/atlas-cli/releases/download/v0.2.6/atlas-windows-amd64.zip'
 if ($env:ATLAS_DOWNLOAD_BASE) { $atlasURL = $env:ATLAS_DOWNLOAD_BASE.TrimEnd('/') + '/atlas-windows-amd64.zip' }
-Invoke-WebRequest -UseBasicParsing -Uri $atlasURL -OutFile $atlasTemporary -Headers @{'User-Agent'='Atlas-CLI/0.2.5'}
+Invoke-WebRequest -UseBasicParsing -Uri $atlasURL -OutFile $atlasTemporary -Headers @{'User-Agent'='Atlas-CLI/0.2.6'}
 Expand-Archive -Force -Path $atlasTemporary -DestinationPath $atlasDirectory
 & $atlasExecutable version
 if ($LASTEXITCODE -ne 0) { throw 'Downloaded Atlas did not run.' }

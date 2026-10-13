@@ -69,10 +69,14 @@ func GitProxy(ctx context.Context) error {
 		r.Host = target.Host
 		r.Header.Del("Authorization")
 		r.Header.Set("User-Agent", "Atlas-CLI/0.1.0")
-		r.SetBasicAuth(S(g, "username"), S(g, "password"))
+		password := S(g, "password")
 		if tok := S(g, "token"); tok != "" {
-			r.Header.Set("Authorization", "token "+tok)
+			// Git smart HTTP and LFS use HTTP Basic, including when the
+			// password is an existing Gitea access token. The API-specific
+			// Authorization: token scheme is rejected by the LFS endpoint.
+			password = tok
 		}
+		r.SetBasicAuth(S(g, "username"), password)
 	}
 	// Gitea's old ROOT_URL is kept for existing clients. Translate only LFS
 	// action URLs in this client's response, so file transfer stays on TLS.

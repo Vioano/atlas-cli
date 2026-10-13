@@ -1,0 +1,176 @@
+{
+  "measured_at_utc": "2026-10-13T20:51:46.675790+00:00",
+  "scope": "Same private 1 MiB LFS object, existing identities, persistent HTTP/1.1 after batch authentication. Stages measured separately; not a line capacity or geographical bound.",
+  "payload_bytes": 1048576,
+  "samples": [
+    {
+      "stage": "server_loopback",
+      "sample": 1,
+      "bytes": 1048576,
+      "header_seconds": 0.026777308899909258,
+      "first_byte_seconds": 0.02678380999714136,
+      "total_seconds": 0.02789731591474265,
+      "mbps": 300.69588148324146,
+      "body_mbps": 7533.502846640194,
+      "payload_verified": true
+    },
+    {
+      "stage": "server_loopback",
+      "sample": 2,
+      "bytes": 1048576,
+      "header_seconds": 0.030349296983331442,
+      "first_byte_seconds": 0.03035740996710956,
+      "total_seconds": 0.03154264099430293,
+      "mbps": 265.9450108034742,
+      "body_mbps": 7077.607493843832,
+      "payload_verified": true
+    },
+    {
+      "stage": "server_loopback",
+      "sample": 3,
+      "bytes": 1048576,
+      "header_seconds": 0.026510966010391712,
+      "first_byte_seconds": 0.02651646500453353,
+      "total_seconds": 0.02738380094524473,
+      "mbps": 306.33468366109724,
+      "body_mbps": 9671.684991079115,
+      "payload_verified": true
+    },
+    {
+      "stage": "relay_tunnel",
+      "sample": 1,
+      "bytes": 1048576,
+      "header_seconds": 0.2860188949853182,
+      "first_byte_seconds": 0.28602820076048374,
+      "total_seconds": 0.5328035214915872,
+      "mbps": 15.744280324041465,
+      "body_mbps": 33.992864339706664,
+      "payload_verified": true
+    },
+    {
+      "stage": "relay_tls_origin",
+      "sample": 1,
+      "bytes": 1048576,
+      "header_seconds": 0.2765070544555783,
+      "first_byte_seconds": 0.27651563845574856,
+      "total_seconds": 0.5152292968705297,
+      "mbps": 16.281310187428932,
+      "body_mbps": 35.140846383512084,
+      "payload_verified": true
+    },
+    {
+      "stage": "relay_tls_origin",
+      "sample": 2,
+      "bytes": 1048576,
+      "header_seconds": 0.3105771988630295,
+      "first_byte_seconds": 0.31058364268392324,
+      "total_seconds": 0.56019152328372,
+      "mbps": 14.974535763818448,
+      "body_mbps": 33.60711200240378,
+      "payload_verified": true
+    },
+    {
+      "stage": "relay_tunnel",
+      "sample": 2,
+      "bytes": 1048576,
+      "header_seconds": 0.35917292162775993,
+      "first_byte_seconds": 0.3591796047985554,
+      "total_seconds": 0.6072402400895953,
+      "mbps": 13.814315070362106,
+      "body_mbps": 33.81673190572128,
+      "payload_verified": true
+    },
+    {
+      "stage": "relay_tunnel",
+      "sample": 3,
+      "bytes": 1048576,
+      "header_seconds": 0.3110886113718152,
+      "first_byte_seconds": 0.3110965071246028,
+      "total_seconds": 0.5729104690253735,
+      "mbps": 14.642092357415935,
+      "body_mbps": 32.040308084025476,
+      "payload_verified": true
+    },
+    {
+      "stage": "relay_tls_origin",
+      "sample": 3,
+      "bytes": 1048576,
+      "header_seconds": 0.29942520149052143,
+      "first_byte_seconds": 0.29943447560071945,
+      "total_seconds": 0.5496382657438517,
+      "mbps": 15.262052376661398,
+      "body_mbps": 33.52707005437926,
+      "payload_verified": true
+    },
+    {
+      "stage": "client_public_tls",
+      "sample": 1,
+      "bytes": 1048576,
+      "header_seconds": 1.0236263750120997,
+      "first_byte_seconds": 1.0255375829292461,
+      "total_seconds": 2.3858318749116734,
+      "mbps": 3.516009693814053,
+      "body_mbps": 6.16675380426309,
+      "payload_verified": true
+    },
+    {
+      "stage": "client_public_tls",
+      "sample": 2,
+      "bytes": 1048576,
+      "header_seconds": 0.6204752919729799,
+      "first_byte_seconds": 0.6204801249550655,
+      "total_seconds": 0.8926259590080008,
+      "mbps": 9.397674261369774,
+      "body_mbps": 30.8239147925679,
+      "payload_verified": true
+    },
+    {
+      "stage": "client_public_tls",
+      "sample": 3,
+      "bytes": 1048576,
+      "header_seconds": 0.8241324169794098,
+      "first_byte_seconds": 0.8259214169811457,
+      "total_seconds": 1.2353249170118943,
+      "mbps": 6.7906085957458515,
+      "body_mbps": 20.489810173508452,
+      "payload_verified": true
+    }
+  ],
+  "medians": {
+    "server_loopback": {
+      "first_byte_seconds": 0.02678380999714136,
+      "total_seconds": 0.02789731591474265,
+      "mbps": 300.69588148324146,
+      "body_mbps": 7533.502846640194,
+      "n": 3
+    },
+    "relay_tunnel": {
+      "first_byte_seconds": 0.3110965071246028,
+      "total_seconds": 0.5729104690253735,
+      "mbps": 14.642092357415935,
+      "body_mbps": 33.81673190572128,
+      "n": 3
+    },
+    "relay_tls_origin": {
+      "first_byte_seconds": 0.29943447560071945,
+      "total_seconds": 0.5496382657438517,
+      "mbps": 15.262052376661398,
+      "body_mbps": 33.60711200240378,
+      "n": 3
+    },
+    "client_public_tls": {
+      "first_byte_seconds": 0.8259214169811457,
+      "total_seconds": 1.2353249170118943,
+      "mbps": 6.7906085957458515,
+      "body_mbps": 20.489810173508452,
+      "n": 3
+    }
+  },
+  "authentication": {
+    "original_live_captain_proxy_lfs_batch_status": 401,
+    "gitea_api_token_scheme_lfs_batch_status": 401,
+    "existing_password_basic_lfs_verified": true,
+    "existing_token_as_basic_password_lfs_verified": true,
+    "credentials_rotated": false
+  }
+}
