@@ -91,7 +91,9 @@ provide actual state and timing. Git uses an authenticated loopback proxy;
 personal server passwords are never stored in Git remote URLs.
 
 Build: Go 1.26+, `go build ./cmd/atlas`. Deploy the optional restricted LAN gateway
-with `scripts/install-lan-gateway.sh`. The `gateway` command can add `/atlas-api/`
+with `scripts/install-lan-gateway.sh`. An optional Linux per-process SSH route
+helper and its guarded review-only deployment are documented in
+[operations.md](docs/operations.md). The `gateway` command can add `/atlas-api/`
 and `/atlas-git/` to an existing HTTPS static-file host while preserving files,
 directory-listing denial, and no-store headers.
 

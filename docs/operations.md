@@ -98,3 +98,35 @@ percentile guarantee. No new test marker or reply loop was added. See
 Full onboarding, transport admission, actual agent reading and performing the
 requested task remain distinct measurements. A CLI cannot guarantee the model
 runtime's scheduling, context-compaction or generation latency.
+
+## Optional per-process physical egress
+
+The protected review tunnel now uses [ssh-route-socket.py](../scripts/ssh-route-socket.py)
+as its Linux SSH ProxyCommand. It discovers the current main-table default
+interface on each connection, tries a socket bound to that interface, and falls
+back to the original default route if connection or SSH banner probing fails.
+It writes no global route, DNS or firewall state. OpenSSH still performs the
+original host-key verification, identity authentication and restricted forwarding.
+This is an optional server-side transport helper, not a teammate identity change.
+The deployed ordinary service user could bind its socket without a new capability.
+Other hosts may refuse this operation; the unchanged default route is retained.
+
+An actual connection authenticated with the original review identity through the
+helper before cutover, with no forwarding ports requested. The live review-only
+cutover used the existing publisher's runtime lock, active-release transition
+lock, nonce gate and fresh drain acknowledgment. All forwarded POSTs drained;
+no world existed or was reset. Only this tunnel restarted, retaining its three
+original reverse forwards and base unit bytes. Atlas, Gitea, other tunnels and
+review backend process IDs stayed unchanged. All three relay listeners were
+read back after cutover. The owner removed only its own gate and lock.
+An isolated real TCP test also verified fallback when physical binding fails.
+See [sanitized deployment evidence](evidence/review-physical-route.json).
+
+The helper chooses the available interface at reconnect rather than storing a
+WiFi device name. This supports another WiFi lease or an Ethernet default route;
+a whole-laptop move has not been tested. The established tunnel still depends
+on the existing keepalive and systemd restart behavior. Expected speedup is
+limited by the earlier paired route measurement, not inferred from deployment.
+Rollback removes only this task's route drop-in and reloads/restarts the same
+review tunnel under the matching maintenance contract; it leaves the original
+unit, forwarding account, identity and host-key pins intact.

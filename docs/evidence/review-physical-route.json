@@ -1,0 +1,31 @@
+{
+  "schema": "atlas-review-route-upgrade/1",
+  "time": "2026-10-14T00:19:50.940881+00:00",
+  "only_review_tunnel_changed": true,
+  "physical_original_identity_authenticated": true,
+  "physical_established": true,
+  "base_unit_bytes_unchanged": true,
+  "original_three_forwards_retained": true,
+  "other_service_pids_unchanged": true,
+  "maintenance": {
+    "admission_closed": true,
+    "inflight_posts": 0
+  },
+  "worlds_created": 0,
+  "global_routes_written": false,
+  "own_gate_removed": true,
+  "own_transition_removed": true,
+  "helper_sha256": "46227443c0e0c11eb99dbc5f7d7eddfc9c47321a9944462be33d837ce1f1db26",
+  "physical_failure_fallback_isolated_tcp_test": true,
+  "global_optimality_proved": false,
+  "original_browser_readback": {
+    "status": 200,
+    "milliseconds": 1495.4,
+    "upstream_connection": "new",
+    "previous_login_retained": true,
+    "original_audio_source_retained": true,
+    "player_error": null,
+    "speedup_proved": false
+  },
+  "physical_failure_fixture": "isolated option denial plus actual loopback TCP SSH banner"
+}
