@@ -16,5 +16,16 @@
   "captain_configuration_and_default_binding_bytes_preserved": true,
   "three_existing_QA_binding_files_bytes_preserved": true,
   "backlog_replayed": false,
-  "actual_business_message_consumption_verified": false
+  "actual_business_message_consumption_verified": true,
+  "actual_business_message": {
+    "message_id": 938,
+    "actual_full_envelope_read": true,
+    "actual_read_receipt": 938,
+    "receipt_was_first_tool_call": true,
+    "native_delivery_transport": "desktop-steer",
+    "send_to_actual_read_seconds_same_server_clock": 21.542044639587402,
+    "new_marker_sent": false,
+    "reply_sent": false,
+    "original_queue_journal_agent_read_flag_not_overwritten": true
+  }
 }

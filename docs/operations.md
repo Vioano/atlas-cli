@@ -179,5 +179,9 @@ Adding the established project channel retained its original receiver PID,
 configuration, default binding, three QA binding files and monotonic cursors.
 The new binding verified the real Desktop owner and progressed from the current
 cursor without an error. The other original chat receivers stayed untouched.
-Future business-message consumption is separate from this configuration check;
-no live marker was created. See [sanitized evidence](evidence/captain-existing-project-binding.json).
+A later natural business message was delivered by Desktop steer to that same
+chat. Its full envelope was actually read, and the first tool call recorded its
+read receipt. Server-clock send-to-read time was 21.542 seconds. The original
+receiver PID stayed the same, and no live marker or acknowledgment reply was
+created. This verifies that delivery case; it does not establish all-client
+onboarding or a latency percentile. See [sanitized evidence](evidence/captain-existing-project-binding.json).
