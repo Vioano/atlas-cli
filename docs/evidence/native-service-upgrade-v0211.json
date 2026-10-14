@@ -1,0 +1,15 @@
+{
+  "public_download_http": 200,
+  "public_version": "atlas 0.2.11",
+  "prior_native_receiver_version": "atlas 0.2.8",
+  "current_native_receiver_version": "atlas 0.2.11",
+  "original_config_bytes_preserved": true,
+  "all_static_binding_bytes_preserved": true,
+  "scope": "Only captain new native CLI-managed receiver; original TapTap receiver not touched",
+  "live_native_receiver_verified": true,
+  "cursor_progress_preserved": true,
+  "all_bindings_fresh_contacts_without_error": true,
+  "original_managed_job_restarted": true,
+  "new_receiver_or_binding": false,
+  "independent_Windows_Desktop_proof": false
+}
