@@ -130,3 +130,12 @@ limited by the earlier paired route measurement, not inferred from deployment.
 Rollback removes only this task's route drop-in and reloads/restarts the same
 review tunnel under the matching maintenance contract; it leaves the original
 unit, forwarding account, identity and host-key pins intact.
+
+The original browser also completed a conditional 304 and, 6.003 seconds after
+its response, a 200 GET on the same HTTP/3 connection. Both reused the upstream
+connection. Response headers took 629.45 and 677.115 ms; upstream header times
+were 299.963 and 357.741 ms. This warm observation did not improve on the earlier
+569.5 ms browser case. Separate times and transport conditions do not establish
+causal regression either. The review-only change is retained for independent
+server egress with the original route as fallback, without a performance claim.
+It does not resolve the browser's separate long pre-send wait.

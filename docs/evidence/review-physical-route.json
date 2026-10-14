@@ -27,5 +27,19 @@
     "player_error": null,
     "speedup_proved": false
   },
-  "physical_failure_fixture": "isolated option denial plus actual loopback TCP SSH banner"
+  "physical_failure_fixture": "isolated option denial plus actual loopback TCP SSH banner",
+  "original_browser_warm_pair": {
+    "protocol": "h3",
+    "same_connection": true,
+    "first_status": 304,
+    "first_headers_ms": 629.45,
+    "first_upstream_headers_ms": 299.963,
+    "second_status": 200,
+    "second_headers_ms": 677.115,
+    "second_upstream_headers_ms": 357.741,
+    "upstream_connections": "reused",
+    "gap_from_first_response_to_second_request_s": 6.002806,
+    "gain_observed": false,
+    "causal_regression_proved": false
+  }
 }
