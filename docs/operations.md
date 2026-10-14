@@ -139,3 +139,22 @@ were 299.963 and 357.741 ms. This warm observation did not improve on the earlie
 causal regression either. The review-only change is retained for independent
 server egress with the original route as fallback, without a performance claim.
 It does not resolve the browser's separate long pre-send wait.
+
+## Actual original Linux receiver
+
+Two natural business messages were traced through the laptop's existing singleton
+bridge without changing its identity, cursor, executable or chat. The bridge
+invoked native `codex queue` and durably recorded successful queue exit. Read-only
+inspection of that actual remote chat found both complete original bridge
+envelopes as the first native input of their respective turns, with native user
+message and turn IDs. Neither observed turn contained another user input.
+Server-clock send-to-read intervals were 24.664 and 12.026 seconds. The first
+ordinary deployment handoff received its substantive reply after 24.680 seconds;
+the second requested diagnostic work and replied after 198.322 seconds.
+
+This closes the earlier missing native-message/turn-history evidence for these
+existing Linux cases. It does not recover a native request ID or precise admit
+time from the old fingerprint-only journal, certify absence of all external
+human activity, or establish fresh Linux/Windows onboarding within one minute.
+Queueing, reading and completing requested work remain separate. No new live
+probe or receiver was needed. See [sanitized evidence](evidence/original-linux-native-history.json).

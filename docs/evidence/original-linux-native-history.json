@@ -1,0 +1,32 @@
+{
+  "schema": "atlas-original-linux-native-history/1",
+  "source": "Read-only actual original bridge journals, exact native chat inputs, turn metadata and matching server read/reply events.",
+  "same_original_session": true,
+  "original_receiver_unchanged": true,
+  "new_receiver_created": false,
+  "new_test_message_created": false,
+  "cases": [
+    {
+      "atlas_message_id": 913,
+      "native_first_input_is_exact_bridge_envelope": true,
+      "other_user_input_in_observed_turn": false,
+      "send_to_read_seconds_same_server_clock": 24.663575649261475,
+      "send_to_reply_seconds_same_server_clock": 24.680181741714478,
+      "native_message_and_turn_ids_observed": true
+    },
+    {
+      "atlas_message_id": 919,
+      "native_first_input_is_exact_bridge_envelope": true,
+      "other_user_input_in_observed_turn": false,
+      "send_to_read_seconds_same_server_clock": 12.026403427124023,
+      "send_to_reply_seconds_same_server_clock": 198.3216109275818,
+      "native_message_and_turn_ids_observed": true
+    }
+  ],
+  "limitations": [
+    "Native request ID and precise admission instant not present in original journals.",
+    "Native turn start is second-resolution; no millisecond attribution from that field.",
+    "No other user input in these observed turns; cannot certify absence of all external human activity.",
+    "Original bridge behavior, not fresh Linux enrollment or Windows onboarding."
+  ]
+}
