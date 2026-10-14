@@ -1,0 +1,64 @@
+{
+  "method": "Existing Mihomo delay API, same public health target, node/round order rotates; three samples per node. Not full native CLI RTT, transport throughput or independent teammate performance.",
+  "summary": [
+    {
+      "host": "captain Mac",
+      "node": "lightsail-anytls-8443",
+      "n": 3,
+      "median_ms": 837,
+      "min_ms": 818,
+      "max_ms": 894
+    },
+    {
+      "host": "captain Mac",
+      "node": "lightsail-hysteria2-8443",
+      "n": 3,
+      "median_ms": 866,
+      "min_ms": 808,
+      "max_ms": 903
+    },
+    {
+      "host": "captain Mac",
+      "node": "lightsail-vless-reality-443",
+      "n": 3,
+      "median_ms": 847,
+      "min_ms": 803,
+      "max_ms": 856
+    },
+    {
+      "host": "private Omarchy",
+      "node": "Hysteria2-443",
+      "n": 3,
+      "median_ms": 844,
+      "min_ms": 662,
+      "max_ms": 903
+    },
+    {
+      "host": "private Omarchy",
+      "node": "la-kessokuu",
+      "n": 3,
+      "median_ms": 823,
+      "min_ms": 796,
+      "max_ms": 889
+    },
+    {
+      "host": "private Omarchy",
+      "node": "la-tcp",
+      "n": 3,
+      "median_ms": 872,
+      "min_ms": 577,
+      "max_ms": 890
+    },
+    {
+      "host": "private Omarchy",
+      "node": "us-la-vless",
+      "n": 3,
+      "median_ms": 964,
+      "min_ms": 805,
+      "max_ms": 1117
+    }
+  ],
+  "selectors_unchanged": true,
+  "new_monthly_fee_usd": 0,
+  "production_default_change": false
+}

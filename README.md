@@ -132,3 +132,12 @@ Actual timing samples, physical bounds and the measured frontier are in
 [performance.md](docs/performance.md). Global optimality is not established.
 Moving the laptop, reconnection evidence and the remaining one-minute limits
 are described in [operations.md](docs/operations.md).
+
+From 0.2.12, the Windows installer reuses a working same-version or newer local
+CLI and still adds it to the current terminal's PATH. New invitations and new
+repository grants no longer force another binary download. A newer installation
+is retained, and a missing, older or non-working executable follows the pinned
+release download. This avoids unnecessary network work without rotating identity
+or touching receiver bindings. Windows CI locks the existing executable and
+blocks download calls while exercising repeated installation and newer-version
+reuse; actual independent teammate onboarding is a separate acceptance step.

@@ -139,3 +139,29 @@ not a global stopping proof.
 Version 0.2.1 prefixes newly generated operation identifiers with a valid letter. Version 0.2.0 used base64url identifiers whose first character could be rejected by the server. Existing credentials stay valid, and invalid pending enrollment identifiers are repaired without changing the pending credential.
 
 Version 0.2.2 falls back to the idle queue when Desktop explicitly rejects steering because the active turn already ended. Unknown delivery failures remain uncertain and are not blindly retried. Sending from an agent uses its current chat identity rather than another chat's last saved binding.
+
+## Existing resources with zero added monthly cost
+
+The owner has set additional recurring cost to zero. The priced regional relay
+remains a research reference, outside the deployment budget. Current Mac and
+server proxy configurations expose existing American nodes and no configured
+Asian node. This is an inventory of those live configurations, not all possible
+resources or proof that geography cannot improve. The server has no globally
+routable IPv6 address. A low-traffic gateway discovery returned no UPnP IGD
+response; this is not proof of NAT type or permission to create port mappings.
+
+The existing nodes were tested without changing either machine's selectors or
+VPN mode. The Mihomo delay API performed three requests per node against the
+same public health endpoint, rotating order. Mac medians were 847 ms for VLESS,
+866 ms for Hysteria2 and 837 ms for AnyTLS. Server-node medians were 872 ms for
+la-tcp, 823 ms for VMess, 964 ms for the other VLESS node and 844 ms for Hysteria2.
+Ranges overlap, and three samples do not show a stable protocol winner. These
+are the proxy core's delay measurements; they do not establish native CLI RTT,
+steady-state throughput or another teammate's result. No production protocol
+switch follows. See [sanitized measurements](evidence/existing-protocols-zero-cost.json).
+
+The major remaining free gains are removal of serial requests, repeated
+installation/transfer and model-processing delays, together with local access
+when available. A zero-fee restriction removes paid alternatives from this
+choice; it does not mathematically prove the current network is physically
+optimal or that every future free improvement has excessive maintenance cost.

@@ -25,6 +25,29 @@ jobs:
           go-version: '1.27.x'
       - name: Test on Windows
         run: go test ./...
+      - name: Reuse a working Windows CLI without downloading or replacing it
+        shell: pwsh
+        run: |
+          $installer = Get-Content -Raw ./scripts/install.ps1
+          $expectedVersion = [regex]::Match($installer, '/releases/download/v(?<version>\d+\.\d+\.\d+)/').Groups['version'].Value
+          if (-not $expectedVersion) { throw 'Installer must pin a release version.' }
+          $env:LOCALAPPDATA = Join-Path $env:RUNNER_TEMP 'atlas-installer-reuse'
+          $atlasDirectory = Join-Path $env:LOCALAPPDATA 'Atlas'
+          New-Item -ItemType Directory -Force -Path $atlasDirectory | Out-Null
+          $atlasExecutable = Join-Path $atlasDirectory 'atlas.exe'
+          go build -ldflags "-X main.version=$expectedVersion" -o $atlasExecutable ./cmd/atlas
+          if ($LASTEXITCODE -ne 0) { throw 'Windows fixture build failed.' }
+          function Invoke-WebRequest { throw 'A reusable CLI must not download.' }
+          $atlasLock = [IO.File]::Open($atlasExecutable, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::Read)
+          try {
+            & ./scripts/install.ps1
+            $actual = & $atlasExecutable version
+            if ($LASTEXITCODE -ne 0 -or $actual -ne "atlas $expectedVersion") { throw 'Existing CLI was not retained.' }
+          } finally { $atlasLock.Dispose() }
+          go build -ldflags "-X main.version=99.0.0" -o $atlasExecutable ./cmd/atlas
+          if ($LASTEXITCODE -ne 0) { throw 'Newer Windows fixture build failed.' }
+          & ./scripts/install.ps1
+          if ((& $atlasExecutable version) -ne 'atlas 99.0.0') { throw 'Invitation downgraded an existing newer CLI.' }
       - name: Run the published Windows installer
         if: github.event_name == 'release'
         shell: pwsh
@@ -32,11 +55,15 @@ jobs:
           $installer = Get-Content -Raw ./scripts/install.ps1
           $expectedVersion = [regex]::Match($installer, '/releases/download/v(?<version>\d+\.\d+\.\d+)/').Groups['version'].Value
           if (-not $expectedVersion) { throw 'Installer must pin a published release version.' }
+          $env:LOCALAPPDATA = Join-Path $env:RUNNER_TEMP 'atlas-published-installer'
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $env:LOCALAPPDATA
           & ./scripts/install.ps1
           $actual = & "$env:LOCALAPPDATA/Atlas/atlas.exe" version
           if ($LASTEXITCODE -ne 0 -or $actual -ne "atlas $expectedVersion") {
             throw "Published Windows CLI did not report the expected version: $actual"
           }
+          function Invoke-WebRequest { throw 'Repeated installation must not download.' }
+          & ./scripts/install.ps1
   platforms:
     runs-on: ubuntu-latest
     strategy:
