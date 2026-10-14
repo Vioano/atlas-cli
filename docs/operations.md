@@ -158,3 +158,26 @@ time from the old fingerprint-only journal, certify absence of all external
 human activity, or establish fresh Linux/Windows onboarding within one minute.
 Queueing, reading and completing requested work remain separate. No new live
 probe or receiver was needed. See [sanitized evidence](evidence/original-linux-native-history.json).
+
+## Captain adopting an existing project
+
+`setup` configures private profiles; it does not subscribe a chat to every old
+project. When adopting an existing project, bind the actual captain chat to
+that project's channel, with explicitly authorized senders:
+
+```sh
+atlas bind --agent current --channel EXISTING_CHANNEL --allow CAPTAIN,TEAMMATE
+```
+
+This adds the binding to the same running native service. A new channel starts
+at its current event cursor; it does not replay another old receiver's backlog.
+Keep the original receiver owner for every old chat. Captain and teammate chat
+UUIDs are different subscribers, not two receiver processes for one chat.
+
+The actual captain development chat was found subscribed only to QA channels.
+Adding the established project channel retained its original receiver PID,
+configuration, default binding, three QA binding files and monotonic cursors.
+The new binding verified the real Desktop owner and progressed from the current
+cursor without an error. The other original chat receivers stayed untouched.
+Future business-message consumption is separate from this configuration check;
+no live marker was created. See [sanitized evidence](evidence/captain-existing-project-binding.json).

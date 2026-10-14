@@ -1,0 +1,20 @@
+{
+  "same_receiver_pid": true,
+  "bindings": 5,
+  "general_state_exists": true,
+  "general_cursor": 1481,
+  "general_error": null,
+  "old_cursors_did_not_retreat": {
+    "01a1358a-5c8e-7d91-a857-c46802ab3397-atlas-cli-e2e-general.json": true,
+    "01a1358a-5c8e-7d91-a857-c46802ab3397-atlas-cli-qa-general.json": true,
+    "01a1358a-5c8e-7d91-a857-c46802ab3397-atlas-cli-fast-general.json": true
+  },
+  "native_mode_verified": true,
+  "initial_cursor": 1480,
+  "new_receiver_created": false,
+  "scope": "Only captain development chat added to its original native receiver; different original teammate receivers untouched",
+  "captain_configuration_and_default_binding_bytes_preserved": true,
+  "three_existing_QA_binding_files_bytes_preserved": true,
+  "backlog_replayed": false,
+  "actual_business_message_consumption_verified": false
+}
