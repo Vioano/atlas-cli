@@ -117,6 +117,23 @@ Because the CLI enables HTTP/2, a native Go probe then repeated the three health
 
 A free temporary Cloudflare Tunnel alternative was tested with a dedicated synthetic origin, exposing only health JSON and random bytes. No production upstream or credentials were connected. Its normal server route registered at `lax01`; eight native Go HTTP/2 health observations had a 639.811 ms median versus 583.639 ms for the existing public Atlas health. A second run gave only the probe's temporary DynamicUser a main-table routing exception and a private resolver mount. Socket inspection confirmed physical WiFi egress; it still registered at `lax01`. That stage had medians of 520.241 ms for synthetic health and 568.149 ms for the original service. Two 8 MiB synthetic downloads achieved 22.036 and 31.655 Mbit/s. Different handlers and separate runs limit causal attribution. This is not a domestic regional path or production acceptance. All temporary tunnel processes stopped, the single UID rule was removed, the old route-rule list was exactly restored and all three production tunnel PIDs remained unchanged. Quick Tunnels have unstable hostnames, no uptime guarantee and no SSE support, so this prototype was not adopted as the production entrance. See `evidence/temporary-cloudflare-route.json` and [the vendor's limits](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/).
 
+A current infrastructure-price check adds a material alternative: [Lightsail's
+public IPv4 Linux Nano bundle](https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-bundles.html)
+is listed at US$5/month with 0.5 GB memory, two vCPUs, 20 GB storage and 1 TB
+monthly transfer. [Singapore and Tokyo are supported regions](https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-regions-and-availability-zones-in-amazon-lightsail.html).
+This is a relay candidate, with repository, computation and identity remaining
+on the private laptop. It is not a measured performance or operating-cost result,
+and no paid instance was created. The price alone does not support dismissing
+all closer regional routes as prohibitively expensive.
+
+[Both inbound and outbound transfer count toward the allowance](https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-faq-data-transfer-allowance.html);
+an uncached relay generally consumes both for a payload. Hong Kong's allowance
+is half the standard regions. [Stopped instances continue to accrue charges](https://docs.aws.amazon.com/en_en/lightsail/latest/userguide/amazon-lightsail-frequently-asked-questions-faq-billing-and-account-management.html),
+so any temporary trial needs deletion, not just a stop. Regional RTT, throughput,
+reliability, maintenance effort and the team's budget remain decision inputs.
+The current free routes and actual measurements establish specific tradeoffs,
+not a global stopping proof.
+
 **No global optimality claim is established.** The physical path, every capacity, alternative relay cost, independent Windows flow and relocation recovery need stronger evidence. The tested changes remove specific waste; they do not prove the network has reached its physical limit or that every further improvement costs too much.
 
 Version 0.2.1 prefixes newly generated operation identifiers with a valid letter. Version 0.2.0 used base64url identifiers whose first character could be rejected by the server. Existing credentials stay valid, and invalid pending enrollment identifiers are repaired without changing the pending credential.
