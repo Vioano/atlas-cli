@@ -140,4 +140,8 @@ is retained, and a missing, older or non-working executable follows the pinned
 release download. This avoids unnecessary network work without rotating identity
 or touching receiver bindings. Windows CI locks the existing executable and
 blocks download calls while exercising repeated installation and newer-version
-reuse; actual independent teammate onboarding is a separate acceptance step.
+reuse. The published release installer also passed fresh installation followed
+by repeat installation with download calls disabled. This removes another
+3.9 MB ZIP transfer for each reuse; elapsed-time savings depend on the client
+network. Actual independent teammate onboarding is a separate acceptance step.
+See [release evidence](docs/evidence/windows-installer-reuse-v0212.json).

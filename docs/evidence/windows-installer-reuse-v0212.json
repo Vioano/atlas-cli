@@ -1,0 +1,15 @@
+{
+  "new_version": "atlas 0.2.12",
+  "same_managed_service": true,
+  "five_existing_bindings_retained": true,
+  "all_static_files_bytes_preserved": true,
+  "old_cursors_monotonic": true,
+  "all_bindings_recovered_without_error": true,
+  "transient_initial_poll_deadline_error_observed": true,
+  "windows_source_CI": 38498778299,
+  "windows_source_installer_reuse_test": "passed, actual executable locked and download calls rejected",
+  "windows_release_CI": 38498981927,
+  "published_ZIP_installer_fresh_then_repeat_test": "passed",
+  "public_mirror_zip_bytes": 3906621,
+  "actual_independent_windows_onboarding": false
+}
